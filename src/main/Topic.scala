@@ -1,6 +1,7 @@
 package main
 
 import scala.collection.mutable.Buffer
+import java.util.Calendar
 
 class Topic(val name: String) {
 	val subtopics = Buffer[Subtopic]()
@@ -44,6 +45,23 @@ class Topic(val name: String) {
 	override def toString = this.name
 	
 }
+
+class Kalenteri() extends Topic("Kalenteri") {
+	override def generate(number: Int): String = {
+		
+		val now = Calendar.getInstance()
+		val week = now.get(Calendar.WEEK_OF_YEAR)
+		val day = now.get(Calendar.DAY_OF_MONTH)
+		
+ 		var str = "Viikko " + week + "\n"
+		val thisWeek = this.subtopics.filter(s => s.date.day < day + 7)
+		val nextWeek = this.subtopics.filter(s => s.date.day + 7 < day + 14)
+		
+		
+		???
+	}
+}
+
 
 object SubtopicOrdering extends Ordering[Subtopic] {
 	def compare(a: Subtopic, b: Subtopic) = a.date compare b.date
