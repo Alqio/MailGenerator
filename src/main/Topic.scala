@@ -53,12 +53,22 @@ class Kalenteri() extends Topic("Kalenteri") {
 		val week = now.get(Calendar.WEEK_OF_YEAR)
 		val day = now.get(Calendar.DAY_OF_MONTH)
 		
- 		var str = "Viikko " + week + "\n"
-		val thisWeek = this.subtopics.filter(s => s.date.day < day + 7)
-		val nextWeek = this.subtopics.filter(s => s.date.day + 7 < day + 14)
+ 		var str = "\nTämä viikko\n"
+		import java.time._
+		val date = LocalDate.now()
+		val nextWeek = date.plusWeeks(1)
+		val sorted = sortSubtopics
+		val thisweek = sorted.filter(s => s.date.innerDate.isBefore(nextWeek))
+		val nextweek = sorted.filter(s => s.date.innerDate.isBefore(nextWeek.plusWeeks(1)) && s.date.innerDate.isAfter(nextWeek))
 		
-		
-		???
+		for (i <- 0 until thisweek.size) {
+			str += "  " + thisweek(i).name + "\n"
+		}
+		str += "Ensi viikko\n"
+		for (i <- 0 until nextweek.size) {
+			str += "  " + nextweek(i).name + "\n"
+		}
+		str + "\n"
 	}
 }
 
