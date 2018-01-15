@@ -65,7 +65,6 @@ object View extends SimpleSwingApplication {
 						subtopic.text = text.text
 					
 						mail.addSubtopicToTopic(topic.selection.item, subtopic)
-						
 						updateOutput()
 					}
 				} else if (source == loadButton) {

@@ -13,6 +13,7 @@ class Mail {
   
   def addSubtopicToTopic(topic: Topic, subtopic: Subtopic) = {
   	topic.addSubtopic(subtopic)
+  	kalenteri.addSubtopic(subtopic)
   }
   
   def generateTableOfContents = {

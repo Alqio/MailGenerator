@@ -47,13 +47,16 @@ class Topic(val name: String) {
 }
 
 class Kalenteri() extends Topic("Kalenteri") {
+  
+  override def generateTableOfContents(n: Int) = ""
+  
 	override def generate(number: Int): String = {
 		
 		val now = Calendar.getInstance()
 		val week = now.get(Calendar.WEEK_OF_YEAR)
 		val day = now.get(Calendar.DAY_OF_MONTH)
 		
- 		var str = "\nTämä viikko\n"
+ 		var str = "\n\n" + number + ". " + this.name + "\n\nTämä viikko\n"
 		import java.time._
 		val date = LocalDate.now()
 		val nextWeek = date.plusWeeks(1)
