@@ -48,7 +48,7 @@ class Topic(val name: String) {
 
 class Kalenteri() extends Topic("Kalenteri") {
   
-  override def generateTableOfContents(n: Int) = ""
+  override def generateTableOfContents(n: Int) = n + ". " + this.name + "\n"
   
 	override def generate(number: Int): String = {
 		
@@ -56,7 +56,7 @@ class Kalenteri() extends Topic("Kalenteri") {
 		val week = now.get(Calendar.WEEK_OF_YEAR)
 		val day = now.get(Calendar.DAY_OF_MONTH)
 		
- 		var str = "\n\n" + number + ". " + this.name + "\n\nTämä viikko\n"
+ 		var str = "\n\n" + number + ". " + this.name + "\n\nTällä viikolla\n"
 		import java.time._
 		val date = LocalDate.now()
 		val nextWeek = date.plusWeeks(1)
@@ -65,9 +65,9 @@ class Kalenteri() extends Topic("Kalenteri") {
 		val nextweek = sorted.filter(s => s.date.innerDate.isBefore(nextWeek.plusWeeks(1)) && s.date.innerDate.isAfter(nextWeek))
 		
 		for (i <- 0 until thisweek.size) {
-			str += "  " + thisweek(i).name + "\n"
+			str += "  " + thisweek(i).date + " " + thisweek(i).name + " (" + thisweek(i).link + ")\n"
 		}
-		str += "Ensi viikko\n"
+		str += "Ensi viikolla\n"
 		for (i <- 0 until nextweek.size) {
 			str += "  " + nextweek(i).name + "\n"
 		}

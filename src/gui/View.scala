@@ -39,7 +39,7 @@ object View extends SimpleSwingApplication {
 	val mainFrame = new MainFrame {
 		
 		val subtopicName  = new TextField(40)
-		val topic = new ComboBox(mail.topics)
+		val topic = new ComboBox(mail.topics.drop(1))
 		val date  = new TextField(40)
 		val link  = new TextField(40)
 		val text  = new TextArea(10, 80) {
