@@ -17,7 +17,7 @@ class Mail {
   }
   
   def generateTableOfContents = {
-  	var str = ""
+  	var str = "Sisällysluettelo\n"
   	for (i <- 0 until topics.size) {
   		str += topics(i).generateTableOfContents(i + 1)
   	}

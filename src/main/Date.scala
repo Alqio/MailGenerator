@@ -8,7 +8,8 @@ class Date(val day: Int, val month: Int, val year:Int = 2018) extends Ordered[Da
   
   def innerDate = LocalDate.of(2018, month, day)
   
-  override def toString = this.day + "." + this.month + "."
+  
+  override def toString = if (this.day != 30 && this.month == 12) this.day + "." + this.month + "." else ""
 }
 object Date {
 	def apply(day: Int,month: Int) = new Date(day, month)

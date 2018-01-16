@@ -69,9 +69,10 @@ class Kalenteri() extends Topic("Kalenteri") {
 		}
 		str += "Ensi viikolla\n"
 		for (i <- 0 until nextweek.size) {
-			str += "  " + nextweek(i).name + "\n"
+			str += "  " + nextweek(i).date + " " + nextweek(i).name + " (" + nextweek(i).link + ")\n"
 		}
-		str + "\n"
+		str += "\n"
+		str + "----\n"
 	}
 }
 
