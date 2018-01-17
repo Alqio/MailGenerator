@@ -2,6 +2,7 @@ package main
 
 import scala.collection.mutable.Buffer
 import java.util.Calendar
+import java.time._
 
 class Topic(val name: String) {
 	val subtopics = Buffer[Subtopic]()
@@ -57,7 +58,7 @@ class Kalenteri() extends Topic("Kalenteri") {
 		val day = now.get(Calendar.DAY_OF_MONTH)
 		
  		var str = "\n\n" + number + ". " + this.name + "\n\nTällä viikolla\n"
-		import java.time._
+		
 		val date = LocalDate.now()
 		val nextWeek = date.plusWeeks(1)
 		val sorted = sortSubtopics
@@ -83,6 +84,8 @@ object SubtopicOrdering extends Ordering[Subtopic] {
 
 class Subtopic(val name: String, val date: Date, val link: String = "") {
 	var text = ""
+	
+	override def toString = name
 
 }
 

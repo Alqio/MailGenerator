@@ -40,32 +40,44 @@ object View extends SimpleSwingApplication {
 		
 		val subtopicName  = new TextField(40)
 		val topic = new ComboBox(mail.topics.drop(1))
+		
+		val subtopic = new MutableComboBox[Subtopic]()
+		
+		subtopic.items = topic.selection.item.subtopics
+		subtopic.preferredSize = new Dimension(100,20)
+		
 		val date  = new TextField(40)
 		val link  = new TextField(40)
 		val text  = new TextArea(10, 80) {
 			editable = true
 		}
 		val addButton = new Button("Add subtopic")
-		val loadButton = new Button("Load")
-		val saveButton = new Button("Save")
+		val loadSubtopicButton = new Button("Load subtopic")
+		val loadButton = new Button("Load from file")
+		val saveButton = new Button("Save to a file")
 
 		
 		
-		val items = Array(subtopicName, topic, date, link, text, addButton, loadButton, saveButton)
+		val items = Array(subtopicName, topic, date, link, text, addButton, loadButton, saveButton, loadSubtopicButton, subtopic, topic)
 
 		items.foreach(this.listenTo(_))
 		
 		this.reactions += {
 			case press: ButtonClicked => {
 				val source = press.source
+				//updateSubtopics()
 				if (source == addButton) {
 					
 					if (subtopicName.text != "" && date.text != "" && text.text != "") {
-						val subtopic = new Subtopic(subtopicName.text, Date(date.text), link.text)
-						subtopic.text = text.text
+						
+						val st = new Subtopic(subtopicName.text, Date(date.text), link.text)
+						st.text = text.text
 					
-						mail.addSubtopicToTopic(topic.selection.item, subtopic)
+						mail.addSubtopicToTopic(topic.selection.item, st)
+						subtopic.items = topic.selection.item.subtopics
+						
 						updateOutput()
+						println(topic.selection.item.subtopics)
 					}
 				} else if (source == loadButton) {
 					val f = loadFile()
@@ -73,11 +85,34 @@ object View extends SimpleSwingApplication {
 					updateOutput()
 				} else if (source == saveButton) {
 					saveFile()
+				} else if (source == loadSubtopicButton) {
+					println("ok")
+					val ss = topic.selection.item.subtopics
+					//val st = ss(ss.indexOf(subtopic.selection.item))
+					val st = subtopic.item
+					date.text = st.date.toString
+					link.text = st.link
+					text.text = st.text
+					
 				}
+			}
+			case SelectionChanged(`topic`) => {
+				subtopic.items = topic.selection.item.subtopics
+				
+				println("jee")
 			}
 		}
 		
-
+		/**
+		 * Update the subtopic combobox
+		 */
+		def updateSubtopics() = {
+			val t = topic.selection.item
+			subtopic.peer.removeAllItems()
+			for (i <- t.subtopics) {
+				subtopic.peer.addItem(i)
+			}
+		}
 		
 		def saveFile(): Option[File] = {
 			val workingDirectory = new File(System.getProperty("user.dir"));
@@ -121,20 +156,23 @@ object View extends SimpleSwingApplication {
       import scala.swing.GridBagPanel.Anchor._
       import scala.swing.GridBagPanel.Fill
       layout += new Label("Topic:") -> new Constraints(0, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
+      layout += new Label("Subtopic:") -> new Constraints(2, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
       layout += new Label("Name:")  -> new Constraints(0, 1, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       layout += new Label("Date:")  -> new Constraints(0, 2, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       layout += new Label("Link:")  -> new Constraints(0, 3, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       layout += new Label("Text:")  -> new Constraints(0, 4, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       
       layout += addButton						-> new Constraints(0, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
-      layout += saveButton					-> new Constraints(1, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
-      layout += loadButton					-> new Constraints(2, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
+      layout += loadSubtopicButton  -> new Constraints(1, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
+      layout += saveButton					-> new Constraints(2, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
+      layout += loadButton					-> new Constraints(3, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
 
-      layout += topic 							-> new Constraints(1, 0, 2, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
-      layout += subtopicName				-> new Constraints(1, 1, 2, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
-      layout += date  							-> new Constraints(1, 2, 2, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
-      layout += link  							-> new Constraints(1, 3, 2, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
-      layout += text  							-> new Constraints(1, 4, 2, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
+      layout += topic 							-> new Constraints(1, 0, 4, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
+      layout += subtopic 						-> new Constraints(3, 0, 5, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
+      layout += subtopicName				-> new Constraints(1, 1, 4, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
+      layout += date  							-> new Constraints(1, 2, 4, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
+      layout += link  							-> new Constraints(1, 3, 4, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
+      layout += text  							-> new Constraints(1, 4, 4, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
     }
 		
 		this.menuBar = new MenuBar {

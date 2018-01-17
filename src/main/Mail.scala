@@ -42,7 +42,7 @@ class Mail {
 object Mail {
 	
 	def createFromString(str: String): Mail = {
-			
+		
 		
 		???
 	}
