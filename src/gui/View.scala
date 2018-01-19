@@ -32,6 +32,7 @@ object View extends SimpleSwingApplication {
 	updateOutput()
 	
 	window.visible = true
+	window.title = "Viikkomaili text"
 	
 	def updateOutput() = {
 		window.output.text = mail.generateAll
@@ -57,17 +58,17 @@ object View extends SimpleSwingApplication {
 		val loadButton = new Button("Load from file")
 		val saveButton = new Button("Save to a file")
 		val loadSubtopics = new Button("Load subtopics")
+		val removeSubtopic = new Button("Remove subtopic")
 		
 		
 		val items = Array(subtopicName, topic, date, link, text, addButton,
-		    loadButton, saveButton, loadSubtopicButton, subtopic, topic, loadSubtopics)
+		    loadButton, saveButton, loadSubtopicButton, subtopic, topic, loadSubtopics, removeSubtopic)
 
 		items.foreach(this.listenTo(_))
 		
 		this.reactions += {
 			case press: ButtonClicked => {
 				val source = press.source
-				//updateSubtopics()
 				if (source == addButton) {
 					
 					if (subtopicName.text != "" && date.text != "" && text.text != "") {
@@ -82,22 +83,19 @@ object View extends SimpleSwingApplication {
 						println(topic.selection.item.subtopics)
 					}
 				} else if (source == loadButton) {
-					val f = loadFile()
-					mail = Mail.createFromString(f)
-					updateOutput()
+					loadFile()
 				} else if (source == saveButton) {
 					saveFile()
 				} else if (source == loadSubtopicButton) {
-					println("ok")
-					val ss = topic.selection.item.subtopics
-					//val st = ss(ss.indexOf(subtopic.selection.item))
 					val st = subtopic.item
 					date.text = st.date.toString
 					link.text = st.link
-					text.text = st.text
-					
+					text.text = st.text					
 				} else if (source == loadSubtopics) {
 				  subtopic.items = topic.selection.item.subtopics
+				} else if (source == removeSubtopic) {
+				  val sbs = topic.selection.item.subtopics
+				  sbs.remove(sbs.indexOf(subtopic.item))
 				}
 			}
 			case SelectionChanged(`topic`) => {
@@ -147,7 +145,7 @@ object View extends SimpleSwingApplication {
 		}
 
 		
-		def loadFile(): String = {
+		def loadFile(): Unit = {
 			val workingDirectory = new File(System.getProperty("user.dir"));
 	
 			val openFile = new JFileChooser()
@@ -161,12 +159,20 @@ object View extends SimpleSwingApplication {
 				case ex: Exception => None
 			}
 			
-			if (file.isEmpty) return ""
+			if (file.isEmpty) return 
 			
 			val path = file.get.getAbsolutePath()
 			
-			Source.fromFile(path).getLines.mkString
-					
+			var str = ""
+			
+      val bufferedSource = Source.fromFile(path)
+      for (line <- bufferedSource.getLines) {
+          str += line + "\n"
+      }
+      bufferedSource.close
+      println(str)
+			
+      mail = Mail.createFromString(str)
 		}
 		
 		this.contents = new GridBagPanel { 
@@ -181,9 +187,10 @@ object View extends SimpleSwingApplication {
       
       layout += addButton						-> new Constraints(0, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
       layout += loadSubtopicButton  -> new Constraints(1, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
-      layout += saveButton					-> new Constraints(2, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
-      layout += loadButton					-> new Constraints(3, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
-
+      layout += saveButton					-> new Constraints(3, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
+      layout += loadButton					-> new Constraints(4, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
+      layout += removeSubtopic			-> new Constraints(2, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
+      
       layout += topic 							-> new Constraints(1, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       layout += loadSubtopics 			-> new Constraints(2, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       layout += subtopic 						-> new Constraints(4, 0, 5, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
@@ -204,7 +211,6 @@ object View extends SimpleSwingApplication {
 		this.pack()
     this.title = "Viikkomaili generator"
     
-		
 	}
 	def top = mainFrame
 	mainFrame.peer.setLocationRelativeTo(null)
