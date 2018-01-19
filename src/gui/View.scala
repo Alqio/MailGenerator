@@ -8,6 +8,7 @@ import java.io.File
 import javax.swing.JFileChooser
 import java.io.FileReader
 import scala.io.Source
+import java.io._
 
 object View extends SimpleSwingApplication {
 	UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName)
@@ -52,13 +53,14 @@ object View extends SimpleSwingApplication {
 			editable = true
 		}
 		val addButton = new Button("Add subtopic")
-		val loadSubtopicButton = new Button("Load subtopic")
+		val loadSubtopicButton = new Button("Select subtopic")
 		val loadButton = new Button("Load from file")
 		val saveButton = new Button("Save to a file")
-
+		val loadSubtopics = new Button("Load subtopics")
 		
 		
-		val items = Array(subtopicName, topic, date, link, text, addButton, loadButton, saveButton, loadSubtopicButton, subtopic, topic)
+		val items = Array(subtopicName, topic, date, link, text, addButton,
+		    loadButton, saveButton, loadSubtopicButton, subtopic, topic, loadSubtopics)
 
 		items.foreach(this.listenTo(_))
 		
@@ -94,6 +96,8 @@ object View extends SimpleSwingApplication {
 					link.text = st.link
 					text.text = st.text
 					
+				} else if (source == loadSubtopics) {
+				  subtopic.items = topic.selection.item.subtopics
 				}
 			}
 			case SelectionChanged(`topic`) => {
@@ -114,19 +118,32 @@ object View extends SimpleSwingApplication {
 			}
 		}
 		
-		def saveFile(): Option[File] = {
+		def saveFile() = {
 			val workingDirectory = new File(System.getProperty("user.dir"));
 	
 			val saveFile = new JFileChooser()
 			saveFile.setCurrentDirectory(workingDirectory)
 			val ret = saveFile.showSaveDialog(null)
-			try {
+			
+			val file = try {
 				val fl = saveFile.getSelectedFile()
 				if (fl == null) None else Some(fl)
 			} catch {
-				case ex: Exception => None
+				case ex: Exception => {
+				  ex.printStackTrace()
+				  None
+				}
 			}
-
+			
+			if (file.isEmpty) {
+			  println("Error occurred when saving file, nothing saved.")
+			} else {
+			  val pw = new PrintWriter(file.get, "UTF-8")
+			  pw.write(mail.generateAll)
+			  pw.close()
+			  println("File saved successfully! File name: " + file.get.getName())
+			}
+			
 		}
 
 		
@@ -156,7 +173,7 @@ object View extends SimpleSwingApplication {
       import scala.swing.GridBagPanel.Anchor._
       import scala.swing.GridBagPanel.Fill
       layout += new Label("Topic:") -> new Constraints(0, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
-      layout += new Label("Subtopic:") -> new Constraints(2, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
+      layout += new Label("Subtopic:") -> new Constraints(3, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
       layout += new Label("Name:")  -> new Constraints(0, 1, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       layout += new Label("Date:")  -> new Constraints(0, 2, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       layout += new Label("Link:")  -> new Constraints(0, 3, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
@@ -167,8 +184,9 @@ object View extends SimpleSwingApplication {
       layout += saveButton					-> new Constraints(2, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
       layout += loadButton					-> new Constraints(3, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
 
-      layout += topic 							-> new Constraints(1, 0, 4, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
-      layout += subtopic 						-> new Constraints(3, 0, 5, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
+      layout += topic 							-> new Constraints(1, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
+      layout += loadSubtopics 			-> new Constraints(2, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
+      layout += subtopic 						-> new Constraints(4, 0, 5, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       layout += subtopicName				-> new Constraints(1, 1, 4, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       layout += date  							-> new Constraints(1, 2, 4, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       layout += link  							-> new Constraints(1, 3, 4, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
