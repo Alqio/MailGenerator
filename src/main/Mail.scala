@@ -41,10 +41,53 @@ class Mail {
 }
 object Mail {
 	
-	def createFromString(str: String): Mail = {
+	def createFromString(lines: Array[String]): Mail = {
+		
+		val mail = new Mail
+		
+		var text = lines.clone
+		//Drop until we are the first subtopic
+		text = text.dropWhile(_ != "2. Kilta").drop(1).dropWhile(_ != "2. Kilta").drop(2)
+		
+		var topic = mail.kilta
+		
+		try {
+			while (text(1) != "" && text(1) != "\n") {
+				addSubtopic(topic)
+			}
+		} catch {
+			case ex: Exception => {
+				println(text.mkString("\n"))
+				//println(mail.generateAll)
+			}
+		}
 		
 		
-		???
+		def addSubtopic(topic: Topic) = {
+			val name = text(0).dropWhile(_ != ' ').drop(1).takeWhile(!_.isDigit).trim
+			
+			val datestr = text(0).dropWhile(_ != ' ').drop(name.length + 1).trim
+			
+			val date = try {
+				Date(datestr)
+			} catch {
+				case ex: Exception => Date(30,12)
+			}
+			//text = text.drop(1)
+			val subtopicText = text.takeWhile(row => row != "---" && row != "----")
+			text = text.drop(subtopicText.length)
+			
+			val subtopic = new Subtopic(name, date)
+			subtopic.text = subtopicText.mkString("\n")
+			
+			mail.addSubtopicToTopic(topic, subtopic)
+			//println(text.take(50).mkString("\n"))	
+		}
+		
+		println("@@@@@@@@@@")
+		println(text.mkString("\n"))
+		
+		mail
 	}
 	
 }

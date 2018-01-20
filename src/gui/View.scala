@@ -163,16 +163,12 @@ object View extends SimpleSwingApplication {
 			
 			val path = file.get.getAbsolutePath()
 			
-			var str = ""
-			
       val bufferedSource = Source.fromFile(path)
-      for (line <- bufferedSource.getLines) {
-          str += line + "\n"
-      }
+      val lines = bufferedSource.getLines().toArray
       bufferedSource.close
-      println(str)
+      //println(lines.mkString("\n"))
 			
-      mail = Mail.createFromString(str)
+      mail = Mail.createFromString(lines)
 		}
 		
 		this.contents = new GridBagPanel { 
