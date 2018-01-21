@@ -37,7 +37,14 @@ class Topic(val name: String) {
 			
 			if (sorted(i).link != "") str += "\n\n" + sorted(i).link
 			
-			if (i < sorted.size - 1) str += "\n\n\n" + subtopicChangeMark + "\n" else str += "\n\n"
+			
+			if (sorted(i).loaded) {
+				if (i < sorted.size - 1) str += "\n" + subtopicChangeMark + "\n" else str += "\n"
+			} else {
+				if (i < sorted.size - 1) str += "\n\n\n" + subtopicChangeMark + "\n" else str += "\n\n"
+				
+			}
+			
 		}
 		str += "----\n"
 		str
@@ -82,10 +89,14 @@ object SubtopicOrdering extends Ordering[Subtopic] {
 	def compare(a: Subtopic, b: Subtopic) = a.date compare b.date
 }
 
-class Subtopic(val name: String, val date: Date, val link: String = "") {
+class Subtopic(val name: String, val date: Date, val link: String = "", val loaded: Boolean = false) {
 	var text = ""
 	
 	override def toString = name
+	
+	def this(name: String, date: Date, loaded: Boolean) = {
+		this(name, date, "", loaded)
+	}
 
 }
 

@@ -41,11 +41,12 @@ object View extends SimpleSwingApplication {
 	val mainFrame = new MainFrame {
 		
 		val subtopicName  = new TextField(40)
-		val topic = new ComboBox(mail.topics.drop(1))
+		val topic = new MutableComboBox[Topic]()
+		topic.items = mail.topics.drop(1)
 		
 		val subtopic = new MutableComboBox[Subtopic]()
 		
-		subtopic.items = topic.selection.item.subtopics
+		subtopic.items = topic.item.subtopics
 		subtopic.preferredSize = new Dimension(100,20)
 		
 		val date  = new TextField(40)
@@ -76,11 +77,11 @@ object View extends SimpleSwingApplication {
 						val st = new Subtopic(subtopicName.text, Date(date.text), link.text)
 						st.text = text.text
 					
-						mail.addSubtopicToTopic(topic.selection.item, st)
-						subtopic.items = topic.selection.item.subtopics
+						mail.addSubtopicToTopic(topic.item, st)
+						subtopic.items = topic.item.subtopics
 						
 						updateOutput()
-						println(topic.selection.item.subtopics)
+						println(topic.item.subtopics)
 					}
 				} else if (source == loadButton) {
 					loadFile()
@@ -92,16 +93,11 @@ object View extends SimpleSwingApplication {
 					link.text = st.link
 					text.text = st.text					
 				} else if (source == loadSubtopics) {
-				  subtopic.items = topic.selection.item.subtopics
+				  subtopic.items = topic.item.subtopics
 				} else if (source == removeSubtopic) {
-				  val sbs = topic.selection.item.subtopics
+				  val sbs = topic.item.subtopics
 				  sbs.remove(sbs.indexOf(subtopic.item))
 				}
-			}
-			case SelectionChanged(`topic`) => {
-				subtopic.items = topic.selection.item.subtopics
-				
-				println("jee")
 			}
 		}
 		
@@ -109,7 +105,7 @@ object View extends SimpleSwingApplication {
 		 * Update the subtopic combobox
 		 */
 		def updateSubtopics() = {
-			val t = topic.selection.item
+			val t = topic.item
 			subtopic.peer.removeAllItems()
 			for (i <- t.subtopics) {
 				subtopic.peer.addItem(i)
@@ -169,6 +165,8 @@ object View extends SimpleSwingApplication {
       //println(lines.mkString("\n"))
 			
       mail = Mail.createFromString(lines)
+      topic.items = mail.topics.drop(1)
+      updateOutput()
 		}
 		
 		this.contents = new GridBagPanel { 
