@@ -73,11 +73,11 @@ class Kalenteri() extends Topic("Kalenteri") {
 		val nextweek = sorted.filter(s => s.date.innerDate.isBefore(nextWeek.plusWeeks(1)) && s.date.innerDate.isAfter(nextWeek))
 		
 		for (i <- 0 until thisweek.size) {
-			str += "  " + thisweek(i).date + " " + thisweek(i).name + " (" + thisweek(i).link + ")\n"
+			str += "  " + thisweek(i).date + " " + thisweek(i).name + "\n"
 		}
 		str += "Ensi viikolla\n"
 		for (i <- 0 until nextweek.size) {
-			str += "  " + nextweek(i).date + " " + nextweek(i).name + " (" + nextweek(i).link + ")\n"
+			str += "  " + nextweek(i).date + " " + nextweek(i).name + "\n"
 		}
 		str += "\n"
 		str + "----\n"

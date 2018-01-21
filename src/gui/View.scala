@@ -91,13 +91,15 @@ object View extends SimpleSwingApplication {
 					val st = subtopic.item
 					date.text = st.date.toString
 					link.text = st.link
-					text.text = st.text					
+					text.text = st.text
+					subtopicName.text = st.name
 				} else if (source == loadSubtopics) {
 				  subtopic.items = topic.item.subtopics
 				} else if (source == removeSubtopic) {
 				  val sbs = topic.item.subtopics
 				  sbs.remove(sbs.indexOf(subtopic.item))
 				}
+				updateOutput()
 			}
 		}
 		
