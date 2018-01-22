@@ -94,10 +94,11 @@ object View extends SimpleSwingApplication {
 					text.text = st.text
 					subtopicName.text = st.name
 				} else if (source == loadSubtopics) {
-				  subtopic.items = topic.item.subtopics
+				  subtopic.items = topic.item.sortSubtopics
 				} else if (source == removeSubtopic) {
 				  val sbs = topic.item.subtopics
 				  sbs.remove(sbs.indexOf(subtopic.item))
+				  mail.kalenteri.subtopics.remove(mail.kalenteri.subtopics.indexOf(subtopic.item))
 				}
 				updateOutput()
 			}
