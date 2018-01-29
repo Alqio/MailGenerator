@@ -7,12 +7,14 @@ import java.time._
 class Topic(val name: String) {
 	val subtopics = Buffer[Subtopic]()
 
-	val subtopicChangeMark = "---"
 
 	def addSubtopic(subtopic: Subtopic) = {
 		this.subtopics += subtopic
 	}
 
+	/**
+	 * Order subtopics by date, ascending
+	 */
 	def sortSubtopics = {
 		val sorted = subtopics.toArray
 		util.Sorting.quickSort(sorted)(SubtopicOrdering)
@@ -39,14 +41,14 @@ class Topic(val name: String) {
 			
 			
 			if (sorted(i).loaded) {
-				if (i < sorted.size - 1) str += "\n" + subtopicChangeMark + "\n" else str += "\n"
+				if (i < sorted.size - 1) str += "\n" + global.subtopicChangeMark + "\n" else str += "\n"
 			} else {
-				if (i < sorted.size - 1) str += "\n\n\n" + subtopicChangeMark + "\n" else str += "\n\n"
+				if (i < sorted.size - 1) str += "\n\n\n" + global.subtopicChangeMark + "\n" else str += "\n\n"
 				
 			}
 			
 		}
-		str += "----\n"
+		str += global.topicChangeMark + "\n"
 		str
 	}
 

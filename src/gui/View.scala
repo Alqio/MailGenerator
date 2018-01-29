@@ -97,21 +97,9 @@ object View extends SimpleSwingApplication {
 				  subtopic.items = topic.item.sortSubtopics
 				} else if (source == removeSubtopic) {
 				  val sbs = topic.item.subtopics
-				  sbs.remove(sbs.indexOf(subtopic.item))
-				  mail.kalenteri.subtopics.remove(mail.kalenteri.subtopics.indexOf(subtopic.item))
+				  mail.removeSubtopicFromTopic(topic.item, subtopic.item)
 				}
 				updateOutput()
-			}
-		}
-		
-		/**
-		 * Update the subtopic combobox
-		 */
-		def updateSubtopics() = {
-			val t = topic.item
-			subtopic.peer.removeAllItems()
-			for (i <- t.subtopics) {
-				subtopic.peer.addItem(i)
 			}
 		}
 		
@@ -182,15 +170,15 @@ object View extends SimpleSwingApplication {
       layout += new Label("Link:")  -> new Constraints(0, 3, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       layout += new Label("Text:")  -> new Constraints(0, 4, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       
-      layout += addButton						-> new Constraints(0, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
-      layout += loadSubtopicButton  -> new Constraints(1, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
+      layout += addButton					-> new Constraints(0, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
+      layout += loadSubtopicButton -> new Constraints(1, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
       layout += saveButton					-> new Constraints(3, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
       layout += loadButton					-> new Constraints(4, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
       layout += removeSubtopic			-> new Constraints(2, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
       
       layout += topic 							-> new Constraints(1, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       layout += loadSubtopics 			-> new Constraints(2, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
-      layout += subtopic 						-> new Constraints(4, 0, 5, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
+      layout += subtopic 					-> new Constraints(4, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       layout += subtopicName				-> new Constraints(1, 1, 4, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       layout += date  							-> new Constraints(1, 2, 4, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       layout += link  							-> new Constraints(1, 3, 4, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)

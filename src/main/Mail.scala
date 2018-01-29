@@ -7,7 +7,6 @@ class Mail {
 	val ayy = new Topic("AYY & Muut")
 	val pohjanurkkaus = new Topic("Pohjanurkkaus")
 
-	val topicChangeMark = "----"
 
 	val topics = Vector(kalenteri, kilta, ayy, pohjanurkkaus)
 
@@ -15,13 +14,17 @@ class Mail {
 		topic.addSubtopic(subtopic)
 		kalenteri.addSubtopic(subtopic)
 	}
+	def removeSubtopicFromTopic(topic: Topic, subtopic: Subtopic) = {
+		topic.subtopics.remove(topic.subtopics.indexOf(subtopic))
+		kalenteri.subtopics.remove(kalenteri.subtopics.indexOf(subtopic))
+	}
 
 	def generateTableOfContents = {
 		var str = "Sisällysluettelo\n"
 		for (i <- 0 until topics.size) {
 			str += topics(i).generateTableOfContents(i + 1)
 		}
-		str += "\n" + topicChangeMark
+		str += "\n" + global.topicChangeMark
 		str
 	}
 
@@ -62,7 +65,7 @@ object Mail {
 				text = text.dropWhile(row => row == "").drop(3).dropWhile(row => row == "")
 				println(text.take(3).mkString("\n"))
 			} catch {
-				case ex: Exception => println("nyt tuli virhe: " + ex.getMessage())
+				case ex: Exception => println("Error when creating mail: " + ex.getMessage())
 			}
 		}
 
