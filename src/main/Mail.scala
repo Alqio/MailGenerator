@@ -7,7 +7,8 @@ class Mail {
 	val ayy = new Topic("AYY & Muut")
 	val pohjanurkkaus = new Topic("Pohjanurkkaus")
 
-
+	var html = false
+	
 	val topics = Vector(kalenteri, kilta, ayy, pohjanurkkaus)
 
 	def addSubtopicToTopic(topic: Topic, subtopic: Subtopic) = {
@@ -36,9 +37,21 @@ class Mail {
 		str
 	}
 
-	def generateAll = {
-		this.generateTableOfContents + generate
+	def generateHtml = {
+		var str = ""
+		for (i <- topics.indices) {
+			str += topics(i).generateHtml(i + 1)
+		}
+		str
 	}
+	
+	def generateAll = {
+		if (!html)
+			this.generateTableOfContents + generate
+		else
+			this.generateTableOfContents + generateHtml
+	}
+	
 
 }
 object Mail {

@@ -30,6 +30,28 @@ class Topic(val name: String) {
 		str
 	}
 
+	def generateHtml(number: Int) = {
+		var str = "\n<h2>" + number + ". " + name + "</h2>\n\n"
+		val sorted = sortSubtopics
+
+		for (i <- 0 until sorted.size) {
+			str += "<u>" + number + "." + (i + 1) + " " + sorted(i).name + " " + sorted(i).date + "</u>\n<p>" + sorted(i).text + "</p>"
+			
+			if (sorted(i).link != "") str += "\n\n" + "<a href=\"" + sorted(i).link + "\">" + sorted(i).link + "</a>"
+			
+			
+			if (sorted(i).loaded) {
+				if (i < sorted.size - 1) str += "\n" + global.subtopicChangeMark + "\n" else str += "\n"
+			} else {
+				if (i < sorted.size - 1) str += "\n\n\n" + global.subtopicChangeMark + "\n" else str += "\n\n"
+				
+			}
+			
+		}
+		str += global.topicChangeMark + "\n"
+		str		
+	}
+	
 	def generate(number: Int) = {
 		var str = "\n" + number + ". " + name + "\n\n"
 		val sorted = sortSubtopics
