@@ -14,7 +14,11 @@ class Date(val day: Int, val month: Int, val year:Int = 2018) extends Ordered[Da
   
   def isPast = innerDate.isBefore(LocalDate.now())
   
-  override def toString = if (this.day == 30 && this.month == 12) "" else this.day + "." + this.month + "."
+  def ==(another: Date) = {
+  	this.day == another.day && this.month == another.month && this.year == another.year
+  }
+  
+  override def toString = this.day + "." + this.month + "."
 }
 object Date {
 	def apply(day: Int,month: Int) = new Date(day, month)

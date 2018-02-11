@@ -57,7 +57,7 @@ class Topic(val name: String) {
 		val sorted = sortSubtopics
 
 		for (i <- 0 until sorted.size) {
-			str += number + "." + (i + 1) + " " + sorted(i).name + " " + sorted(i).date + "\n" + sorted(i).text
+			str += number + "." + (i + 1) + " " + sorted(i).name + (if (sorted(i).displayDate) " " + sorted(i).date ) + "\n" + sorted(i).text
 			
 			if (sorted(i).link != "") str += "\n\n" + sorted(i).link
 			
@@ -115,6 +115,10 @@ object SubtopicOrdering extends Ordering[Subtopic] {
 
 class Subtopic(val name: String, val date: Date, val link: String = "", val loaded: Boolean = false) {
 	var text = ""
+	var displayDate = true
+	if (date == Date("30.12.")) {
+		displayDate = false
+	}
 	
 	override def toString = name
 	
