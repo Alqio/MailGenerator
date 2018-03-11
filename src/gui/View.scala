@@ -49,7 +49,10 @@ object View extends SimpleSwingApplication {
 		subtopic.items = topic.item.subtopics
 		subtopic.preferredSize = new Dimension(100,20)
 		
-		val date  = new TextField(40)
+		val date  = new TextField(10)
+		val signup_start = new TextField(10)
+		val signup_end = new TextField(10)
+		
 		val link  = new TextField(40)
 		val text  = new TextArea(10, 80) {
 			editable = true
@@ -64,7 +67,8 @@ object View extends SimpleSwingApplication {
 		
 		
 		val items = Array(subtopicName, topic, date, link, text, addButton,
-		    loadButton, saveButton, loadSubtopicButton, subtopic, topic, loadSubtopics, removeSubtopic, htmlCheckbox)
+		    loadButton, saveButton, loadSubtopicButton, subtopic, topic, 
+		    loadSubtopics, removeSubtopic, htmlCheckbox, signup_start, signup_end)
 
 		items.foreach(this.listenTo(_))
 		
@@ -77,7 +81,13 @@ object View extends SimpleSwingApplication {
 						
 						val st = new Subtopic(subtopicName.text, Date(date.text), link.text)
 						st.text = text.text
-					
+						
+						if (signup_start != "" && signup_end != "") {
+							st.signup_start = Date(signup_start.text)
+							st.signup_end = Date(signup_end.text)
+							
+						}
+						
 						mail.addSubtopicToTopic(topic.item, st)
 						subtopic.items = topic.item.subtopics
 						
@@ -91,6 +101,8 @@ object View extends SimpleSwingApplication {
 				} else if (source == loadSubtopicButton) {
 					val st = subtopic.item
 					date.text = st.date.toString
+					signup_start.text = st.signup_start.toString
+					signup_end.text = st.signup_end.toString
 					link.text = st.link
 					text.text = st.text
 					subtopicName.text = st.name
@@ -170,24 +182,28 @@ object View extends SimpleSwingApplication {
       layout += new Label("Topic:") -> new Constraints(0, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
       layout += new Label("Subtopic:") -> new Constraints(3, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
       layout += new Label("Name:")  -> new Constraints(0, 1, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
-      layout += new Label("Date:")  -> new Constraints(0, 2, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
-      layout += new Label("Link:")  -> new Constraints(0, 3, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
-      layout += new Label("Text:")  -> new Constraints(0, 4, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
+      layout += new Label("Date:")  -> new Constraints(0, 3, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
+      layout += new Label("Signup start:")  -> new Constraints(0, 4, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
+      layout += new Label("Signup End:")  -> new Constraints(0, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
+      layout += new Label("Link:")  -> new Constraints(0, 2, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
+      layout += new Label("Text:")  -> new Constraints(0, 6, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       
-      layout += addButton				  	-> new Constraints(0, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
-      layout += loadSubtopicButton  -> new Constraints(1, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
-      layout += saveButton					-> new Constraints(3, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
-      layout += loadButton					-> new Constraints(4, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
-      layout += removeSubtopic			-> new Constraints(2, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
+      layout += addButton				  	-> new Constraints(0, 7, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
+      layout += loadSubtopicButton  -> new Constraints(1, 7, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
+      layout += saveButton					-> new Constraints(3, 7, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
+      layout += loadButton					-> new Constraints(4, 7, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
+      layout += removeSubtopic			-> new Constraints(2, 7, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
       layout += htmlCheckbox	  		-> new Constraints(5, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
       
       layout += topic 							-> new Constraints(1, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       layout += loadSubtopics 			-> new Constraints(2, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       layout += subtopic 					  -> new Constraints(4, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       layout += subtopicName				-> new Constraints(1, 1, 4, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
-      layout += date  							-> new Constraints(1, 2, 4, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
-      layout += link  							-> new Constraints(1, 3, 4, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
-      layout += text  							-> new Constraints(1, 4, 4, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
+      layout += date  							-> new Constraints(1, 3, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
+      layout += signup_start				-> new Constraints(1, 4, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
+      layout += signup_end 					-> new Constraints(1, 5, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
+      layout += link  							-> new Constraints(1, 2, 4, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
+      layout += text  							-> new Constraints(1, 6, 4, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
     }
 		
 		this.menuBar = new MenuBar {

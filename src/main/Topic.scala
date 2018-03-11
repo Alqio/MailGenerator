@@ -57,7 +57,8 @@ class Topic(val name: String) {
 		val sorted = sortSubtopics
 
 		for (i <- 0 until sorted.size) {
-			str += number + "." + (i + 1) + " " + sorted(i).name + (if (sorted(i).displayDate) " " + sorted(i).date ) + "\n" + sorted(i).text
+			
+			str += number + "." + (i + 1) + " " + sorted(i).name + (if (sorted(i).displayDate) " " + sorted(i).date else "") + "\n" + sorted(i).text
 			
 			if (sorted(i).link != "") str += "\n\n" + sorted(i).link
 			
@@ -103,8 +104,19 @@ class Kalenteri() extends Topic("Kalenteri") {
 		for (i <- 0 until nextweek.size) {
 			str += "  " + nextweek(i).date + " " + nextweek(i).name + "\n"
 		}
+		
+		str += "\n"
+		
+		//Signups
+		str += "Tällä viikolla auki olevat ilmoittautumiset\n"
+		val signups = sorted.filter(s => s.signup_start.innerDate.isBefore(nextWeek) && s.signup_end.innerDate.isAfter(date))
+		
+		for (subtopic <- signups) {
+			str += "  " + subtopic.signup_start + " - " + subtopic.signup_end + " " + subtopic.name + "\n"
+		}
 		str += "\n"
 		str + "----\n"
+		
 	}
 }
 
@@ -116,7 +128,11 @@ object SubtopicOrdering extends Ordering[Subtopic] {
 class Subtopic(val name: String, val date: Date, val link: String = "", val loaded: Boolean = false) {
 	var text = ""
 	var displayDate = true
-	if (date == Date("30.12.")) {
+	
+	var signup_start = Date("30.12.")
+	var signup_end = Date("30.12.")
+	
+	if (date == Date("30.12.") || date == Date("31.12.")) {
 		displayDate = false
 	}
 	

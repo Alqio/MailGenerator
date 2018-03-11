@@ -4,12 +4,13 @@ class Mail {
 
 	val kalenteri = new Kalenteri()
 	val kilta = new Topic("Kilta")
-	val ayy = new Topic("AYY & Muut")
+	val ayy = new Topic("AYY")
 	val pohjanurkkaus = new Topic("Pohjanurkkaus")
+	val muut = new Topic("Muut")
 
 	var html = false
 	
-	val topics = Vector(kalenteri, kilta, ayy, pohjanurkkaus)
+	val topics = Vector(kalenteri, kilta, ayy, muut, pohjanurkkaus)
 
 	def addSubtopicToTopic(topic: Topic, subtopic: Subtopic) = {
 		topic.addSubtopic(subtopic)
@@ -56,8 +57,13 @@ class Mail {
 }
 object Mail {
 
+	/**
+	 * Generate and fill an mail instance from an array of strings (lines of the file).
+	 * @param lines the lines that were read from file
+	 * @ret the mail instance
+	 */
 	def createFromString(lines: Array[String]): Mail = {
-
+		
 		val mail = new Mail
 
 		var text = lines.clone
@@ -86,9 +92,14 @@ object Mail {
 			if (text(1) == "---") {
 				text = text.drop(2)
 			}
-			val name = text(0).dropWhile(_ != ' ').drop(1).takeWhile(!_.isDigit).trim
+			
+			val row = text(0).reverse
+			
+			val d = if (row(0) == '.') row.takeWhile(_ != ' ').reverse else ""
+			
+			val name = text(0).dropWhile(_ != ' ').dropRight(d.size).trim
 
-			val datestr = text(0).dropWhile(_ != ' ').drop(name.length + 1).trim
+			val datestr = d//text(0).dropWhile(_ != ' ').drop(name.length + 1).trim
 
 			val date = try {
 				Date(datestr)
