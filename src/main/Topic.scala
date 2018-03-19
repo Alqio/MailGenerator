@@ -118,6 +118,42 @@ class Kalenteri() extends Topic("Kalenteri") {
 		str + "----\n"
 		
 	}
+	override def generateHtml(number: Int): String = {
+		
+		val now = Calendar.getInstance()
+		val week = now.get(Calendar.WEEK_OF_YEAR)
+		val day = now.get(Calendar.DAY_OF_MONTH)
+		
+ 		var str = "\n\n" + number + ". " + this.name + "\n\nTällä viikolla\n"
+		
+		val date = LocalDate.now()
+		val nextWeek = date.plusWeeks(1)
+		val sorted = sortSubtopics
+		val thisweek = sorted.filter(s => s.date.innerDate.isBefore(nextWeek))
+		val nextweek = sorted.filter(s => s.date.innerDate.isBefore(nextWeek.plusWeeks(1)) && s.date.innerDate.isAfter(nextWeek))
+		
+		for (i <- 0 until thisweek.size) {
+			str += "  " + thisweek(i).date + " " + thisweek(i).name + "\n"
+		}
+		str += "Ensi viikolla\n"
+		for (i <- 0 until nextweek.size) {
+			str += "  " + nextweek(i).date + " " + nextweek(i).name + "\n"
+		}
+		
+		str += "\n"
+		
+		//Signups
+		str += "Tällä viikolla auki olevat ilmoittautumiset\n"
+		val signups = sorted.filter(s => s.signup_start.innerDate.isBefore(nextWeek) && s.signup_end.innerDate.isAfter(date))
+		
+		for (subtopic <- signups) {
+			str += "  " + subtopic.signup_start + " - " + subtopic.signup_end + " " + subtopic.name + "\n"
+		}
+		str += "\n"
+		str + "----\n"
+		
+	}
+  
 }
 
 

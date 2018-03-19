@@ -1,12 +1,14 @@
 package main
 
+import collection.mutable.Map
+
 class Mail {
 
 	val kalenteri = new Kalenteri()
 	val kilta = new Topic("Kilta")
-	val ayy = new Topic("AYY")
-	val pohjanurkkaus = new Topic("Pohjanurkkaus")
+	val ayy = new Topic("AYY & Aalto")
 	val muut = new Topic("Muut")
+	val pohjanurkkaus = new Topic("Pohjanurkkaus")
 
 	var html = false
 	
@@ -65,13 +67,40 @@ object Mail {
 	def createFromString(lines: Array[String]): Mail = {
 		
 		val mail = new Mail
-
+		val signups = Map[String, (Date, Date)]()
 		var text = lines.clone
-		//Drop until we are the first subtopic
-		text = text.dropWhile(_ != "2. Kilta").drop(1).dropWhile(_ != "2. Kilta").drop(2)
+		
+		//Drop table of contents
+		text = text.dropWhile(_ != "----")
+		
+		//Drop until we are at Calendar and then drop to signups.
+		text = text.dropWhile(_ != "1. Kalenteri").drop(2).dropWhile(_ != "").drop(2)
+		
+		println("TEXT(0): " + text(0))
+		
+		
+		//Read in signups that will be added last to subtopics after they have been created
+		var i = 0
+		while (text(i) != "") {
+			var row = text(i).dropWhile(_ == ' ')
+			val start = row.takeWhile(_ != ' ')
+			row = row.drop(start.size).dropWhile(!_.isDigit)
+			val end = row.takeWhile(_ != ' ')
+			row = row.drop(end.size).dropWhile(_ == ' ')
+			val name = row.trim
+			
+			signups += name -> (Date(start), Date(end))
+			
+			i += 1
+		}
+		text = text.drop(i)
+		
+		//Drop until we are the first subtopic in section 2. Kilta
+		text = text.dropWhile(_ != "2. Kilta").drop(2)
 
 		move(mail.kilta)
 		move(mail.ayy)
+		move(mail.muut)
 		move(mail.pohjanurkkaus)
 
 		def move(topic: Topic) = {
@@ -120,6 +149,20 @@ object Mail {
 			//println(topic.generate(2))
 		}
 
+		//Add signup dates for signups now that they have been created
+		for (signup <- signups) {
+			val name = signup._1
+			val date = signup._2
+
+			for (subtopic <- mail.kilta.subtopics ++ mail.ayy.subtopics ++ mail.muut.subtopics) {
+				if (subtopic.name == name) {
+					subtopic.signup_start = date._1
+					subtopic.signup_end = date._2
+				}
+			}
+			
+		}
+		
 		println("@@@@@@@@@@")
 		//println(text.mkString("\n"))
 		//println(mail.generateAll)
