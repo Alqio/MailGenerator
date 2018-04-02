@@ -51,8 +51,46 @@ class Mail {
 	def generateAll = {
 		if (!html)
 			this.generateTableOfContents + generate
-		else
-			this.generateTableOfContents + generateHtml
+		else {
+			val head = """
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+     <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script> 
+    
+    <style>
+        body {
+            font-family: monospace;
+        }
+    </style>
+    
+</head>
+
+<body>
+<div class="container">
+<PRE>
+"""
+			
+			val end = """
+</PRE>
+</div>
+</body>
+</html>
+"""
+			
+			head + this.generateTableOfContents + generateHtml + end
+		}
 	}
 	
 

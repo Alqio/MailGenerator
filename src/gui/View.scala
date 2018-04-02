@@ -101,7 +101,6 @@ object View extends SimpleSwingApplication {
 					updateOutput()
 				} else if (source == saveButton) {
 					saveFile()
-					updateOutput()
 				} else if (source == loadSubtopicButton) {
 					val st = subtopic.item
 					date.text = st.date.toString
@@ -118,6 +117,7 @@ object View extends SimpleSwingApplication {
 				  updateOutput()
 				} else if (source == htmlCheckbox) {
 					mail.html = !mail.html
+					updateOutput()
 				}
 			}
 		}

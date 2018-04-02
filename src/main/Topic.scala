@@ -42,7 +42,7 @@ class Topic(val name: String) {
 		val sorted = sortSubtopics
 
 		for (i <- 0 until sorted.size) {
-			str += "<u>" + number + "." + (i + 1) + " " + sorted(i).name + " " + sorted(i).date + "</u>\n<p>" + sorted(i).text + "</p>"
+			str += "<u>" + number + "." + (i + 1) + " " + sorted(i).name + " " + (if (sorted(i).displayDate) " " + sorted(i).date else "") + "</u>\n<p>" + sorted(i).text + "</p>"
 			
 			if (sorted(i).link != "") str += "\n\n" + "<a href=\"" + sorted(i).link + "\">" + sorted(i).link + "</a>"
 			
