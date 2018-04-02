@@ -7,7 +7,6 @@ import java.time._
 class Topic(val name: String) {
 	val subtopics = Buffer[Subtopic]()
 
-
 	def addSubtopic(subtopic: Subtopic) = {
 		this.subtopics += subtopic
 	}
@@ -18,6 +17,14 @@ class Topic(val name: String) {
 	def sortSubtopics = {
 		val sorted = subtopics.toArray
 		util.Sorting.quickSort(sorted)(SubtopicOrdering)
+		sorted
+	}
+	/**
+	 * Order subtopics by date, ascending
+	 */
+	def sortSubtopicsBySignup = {
+		val sorted = subtopics.toArray
+		util.Sorting.quickSort(sorted)(SubtopicOrdering2)
 		sorted
 	}
 
@@ -109,7 +116,10 @@ class Kalenteri() extends Topic("Kalenteri") {
 		
 		//Signups
 		str += "Tällä viikolla auki olevat ilmoittautumiset\n"
-		val signups = sorted.filter(s => s.signup_start.innerDate.isBefore(nextWeek) && s.signup_end.innerDate.isAfter(date))
+		
+		val sorted2 = sortSubtopicsBySignup
+		
+		val signups = sorted2.filter(s => s.signup_start.innerDate.isBefore(nextWeek) && s.signup_end.innerDate.isAfter(date))
 		
 		for (subtopic <- signups) {
 			str += "  " + subtopic.signup_start + " - " + subtopic.signup_end + " " + subtopic.name + "\n"
@@ -159,6 +169,10 @@ class Kalenteri() extends Topic("Kalenteri") {
 
 object SubtopicOrdering extends Ordering[Subtopic] {
 	def compare(a: Subtopic, b: Subtopic) = a.date compare b.date
+}
+
+object SubtopicOrdering2 extends Ordering[Subtopic] {
+	def compare(a: Subtopic, b: Subtopic) = a.signup_end compare b.signup_end
 }
 
 class Subtopic(val name: String, val date: Date, val link: String = "", val loaded: Boolean = false) {

@@ -92,12 +92,16 @@ object View extends SimpleSwingApplication {
 						subtopic.items = topic.item.subtopics
 						
 						updateOutput()
-						println(topic.item.subtopics)
+						//println(topic.item.subtopics)
+						println("Added subtopic " + subtopicName.text + " to topic " + topic.item)
+						updateOutput()
 					}
 				} else if (source == loadButton) {
 					loadFile()
+					updateOutput()
 				} else if (source == saveButton) {
 					saveFile()
+					updateOutput()
 				} else if (source == loadSubtopicButton) {
 					val st = subtopic.item
 					date.text = st.date.toString
@@ -111,11 +115,10 @@ object View extends SimpleSwingApplication {
 				} else if (source == removeSubtopic) {
 				  val sbs = topic.item.subtopics
 				  mail.removeSubtopicFromTopic(topic.item, subtopic.item)
+				  updateOutput()
 				} else if (source == htmlCheckbox) {
 					mail.html = !mail.html
 				}
-				
-				updateOutput()
 			}
 		}
 		
