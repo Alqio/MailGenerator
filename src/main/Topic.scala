@@ -38,13 +38,31 @@ class Topic(val name: String) {
 	}
 
 	def generateHtml(number: Int) = {
-		var str = "\n<h2>" + number + ". " + name + "</h2>\n\n"
+		println("Generating html for number " + number)
+		var str = "\n<button type=\"button\" class=\"btn\" data-toggle=\"collapse\" data-target=\"#" + name.replace(' ', '_').replace('&', 'U') + 
+							"\"><h2><i class=\"fa fa-plus-circle\" style=\"font-size:24px\"></i>  "+ number + ". " + name + "</h2></button>\n"
+		
+		//val s = "<div id=\"" + "\" class=\"collapse\">
+		str += "<div id=\"" + name.replace(' ', '_').replace('&', 'U') + "\" class=\"collapse\">\n\n"
+		
 		val sorted = sortSubtopics
 
 		for (i <- 0 until sorted.size) {
-			str += "<u>" + number + "." + (i + 1) + " " + sorted(i).name + (if (sorted(i).displayDate) " " + sorted(i).date else "") + "</u>\n<p>" + sorted(i).text + "</p>"
+			
+			val realName = sorted(i).name.replace(' ', '_')
+			
+			str += "\n<button type=\"button\" class=\"btn\" data-toggle=\"collapse\" data-target=\"#" + realName +
+						 "\"><i class=\"fa fa-plus-circle\" style=\"font-size:16px\"></i>  "+ number + "."+ (i + 1) + " " + sorted(i).name + 
+						 (if (sorted(i).displayDate) " " + sorted(i).date else "") + "</u></button>\n"
+			
+			str += "<div id=\"" + realName + "\" class=\"collapse\">\n\n"
+			
+			str += "<p>" + sorted(i).text + "</p>"
+			
+			//str += "<u>" + number + "." + (i + 1) + " " + sorted(i).name + (if (sorted(i).displayDate) " " + sorted(i).date else "") + "</u>\n<p>" + sorted(i).text + "</p>"
 			
 			if (sorted(i).link != "") str += "\n\n" + "<a href=\"" + sorted(i).link + "\">" + sorted(i).link + "</a>"
+			
 			
 			
 			if (sorted(i).loaded) {
@@ -53,8 +71,10 @@ class Topic(val name: String) {
 				if (i < sorted.size - 1) str += "\n\n\n" + global.subtopicChangeMark + "\n" else str += "\n\n"
 				
 			}
+			str += "</div>"
 			
 		}
+		str += "</div>"
 		str += global.topicChangeMark + "\n"
 		str		
 	}
@@ -96,7 +116,7 @@ class Kalenteri() extends Topic("Kalenteri") {
 		val week = now.get(Calendar.WEEK_OF_YEAR)
 		val day = now.get(Calendar.DAY_OF_MONTH)
 		
- 		var str = "\n\n<h2>" + number + ". " + this.name + "</h2>\n\nTällä viikolla\n"
+ 		var str = "\n\n" + number + ". " + this.name + "\n\nTällä viikolla\n"
 		
 		val date = LocalDate.now()
 		val nextWeek = date.plusWeeks(1)
@@ -134,8 +154,9 @@ class Kalenteri() extends Topic("Kalenteri") {
 		val week = now.get(Calendar.WEEK_OF_YEAR)
 		val day = now.get(Calendar.DAY_OF_MONTH)
 		
- 		var str = "\n\n" + number + ". " + this.name + "\n\nTällä viikolla\n"
-		
+ 		
+		var str = "\n\n<h2>" + number + ". " + this.name + "</h2>\n\nTällä viikolla\n"
+
 		val date = LocalDate.now()
 		val nextWeek = date.plusWeeks(1)
 		val sorted = sortSubtopics
