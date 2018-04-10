@@ -31,6 +31,15 @@ class Mail {
 		str += "\n" + global.topicChangeMark
 		str
 	}
+	
+	def generateTableOfContentsHtml = {
+		var str = "<h2>Sisällysluettelo</h2>\n"
+		for (i <- 0 until topics.size) {
+			str += topics(i).generateTableOfContents(i + 1)
+		}
+		str += "\n" + global.topicChangeMark
+		str	  
+	}
 
 	def generate = {
 		var str = ""
@@ -94,7 +103,7 @@ class Mail {
 </html>
 """
 			
-			head + this.generateTableOfContents + generateHtml + end
+			head + this.generateTableOfContentsHtml + generateHtml + end
 		}
 	}
 	

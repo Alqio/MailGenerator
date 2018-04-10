@@ -42,7 +42,7 @@ class Topic(val name: String) {
 		val sorted = sortSubtopics
 
 		for (i <- 0 until sorted.size) {
-			str += "<u>" + number + "." + (i + 1) + " " + sorted(i).name + " " + (if (sorted(i).displayDate) " " + sorted(i).date else "") + "</u>\n<p>" + sorted(i).text + "</p>"
+			str += "<u>" + number + "." + (i + 1) + " " + sorted(i).name + (if (sorted(i).displayDate) " " + sorted(i).date else "") + "</u>\n<p>" + sorted(i).text + "</p>"
 			
 			if (sorted(i).link != "") str += "\n\n" + "<a href=\"" + sorted(i).link + "\">" + sorted(i).link + "</a>"
 			
@@ -96,7 +96,7 @@ class Kalenteri() extends Topic("Kalenteri") {
 		val week = now.get(Calendar.WEEK_OF_YEAR)
 		val day = now.get(Calendar.DAY_OF_MONTH)
 		
- 		var str = "\n\n" + number + ". " + this.name + "\n\nTällä viikolla\n"
+ 		var str = "\n\n<h2>" + number + ". " + this.name + "</h2>\n\nTällä viikolla\n"
 		
 		val date = LocalDate.now()
 		val nextWeek = date.plusWeeks(1)
