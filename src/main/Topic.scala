@@ -42,7 +42,34 @@ class Topic(val name: String) {
 		val sorted = sortSubtopics
 
 		for (i <- 0 until sorted.size) {
-			str += "<u>" + number + "." + (i + 1) + " " + sorted(i).name + (if (sorted(i).displayDate) " " + sorted(i).date else "") + "</u>\n<p>" + sorted(i).text + "</p>"
+			str += "<u>" + number + "." + (i + 1) + " " + sorted(i).name + (if (sorted(i).displayDate) " " + sorted(i).date else "") + "</u>\n"
+
+			val textAsArray = sorted(i).text.split('\n')
+			val textFixedArray = Buffer[String]()
+			
+			for (line <- textAsArray) {
+				val splitted = line.split(' ')
+				println(splitted)
+				val beforeLink = splitted.takeWhile(word => !word.contains("http"))
+				println("before link: " + beforeLink.mkString(", "))
+				
+				if (beforeLink.size < splitted.size) {
+					val link = splitted(beforeLink.size)
+					println(link)
+					if (beforeLink.size == 0) {
+						splitted(beforeLink.size) = "\n\n<a href=\"" + link + "\">" + link + "</a>"
+					} else {
+						splitted(beforeLink.size) = "<a href=\"" + link + "\">" + link + "</a>"
+					}
+					
+				}
+				textFixedArray += splitted.mkString(" ")
+				
+
+			}
+			
+			
+			str += "<p>" + textFixedArray.mkString("\n") + "</p>"
 			
 			if (sorted(i).link != "") str += "\n\n" + "<a href=\"" + sorted(i).link + "\">" + sorted(i).link + "</a>"
 			
@@ -55,6 +82,74 @@ class Topic(val name: String) {
 			}
 			
 		}
+		str += global.topicChangeMark + "\n"
+		str		
+	}
+	
+	def generateHtmlSpecial(number: Int) = {
+		println("Generating html for number " + number)
+		var str = "\n<button type=\"button\" class=\"btn\" data-toggle=\"collapse\" data-target=\"#" + name.replace(' ', '_').replace('&', 'U') + 
+							"\"><h2><i class=\"fa fa-plus-circle\" style=\"font-size:24px\"></i>  "+ number + ". " + name + "</h2></button>\n"
+		
+		//val s = "<div id=\"" + "\" class=\"collapse\">
+		str += "<div id=\"" + name.replace(' ', '_').replace('&', 'U') + "\" class=\"collapse\">\n\n"
+		
+		val sorted = sortSubtopics
+
+		for (i <- 0 until sorted.size) {
+			
+			val realName = sorted(i).name.replace(' ', '_').map(x => if (x.isLetter) x else "ZZ").mkString
+			println(realName)
+			
+			str += "\n<button type=\"button\" class=\"btn\" data-toggle=\"collapse\" data-target=\"#" + realName +
+						 "\"><i class=\"fa fa-plus-circle\" style=\"font-size:16px\"></i>  "+ number + "."+ (i + 1) + " " + sorted(i).name + 
+						 (if (sorted(i).displayDate) " " + sorted(i).date else "") + "</u></button>\n"
+			
+			str += "<div id=\"" + realName + "\" class=\"collapse\">\n\n"
+			
+			val textAsArray = sorted(i).text.split('\n')
+			val textFixedArray = Buffer[String]()
+			
+			for (line <- textAsArray) {
+				val splitted = line.split(' ')
+				println(splitted)
+				val beforeLink = splitted.takeWhile(word => !word.contains("http"))
+				println("before link: " + beforeLink.mkString(", "))
+				
+				if (beforeLink.size < splitted.size) {
+					val link = splitted(beforeLink.size)
+					println(link)
+					if (beforeLink.size == 0) {
+						splitted(beforeLink.size) = "\n\n<a href=\"" + link + "\">" + link + "</a>"
+					} else {
+						splitted(beforeLink.size) = "<a href=\"" + link + "\">" + link + "</a>"
+					}
+					
+				}
+				textFixedArray += splitted.mkString(" ")
+				
+
+			}
+			
+			
+			str += "<p>" + textFixedArray.mkString("\n") + "</p>"
+			
+			//str += "<u>" + number + "." + (i + 1) + " " + sorted(i).name + (if (sorted(i).displayDate) " " + sorted(i).date else "") + "</u>\n<p>" + sorted(i).text + "</p>"
+			
+			if (sorted(i).link != "") str += "\n\n" + "<a href=\"" + sorted(i).link + "\">" + sorted(i).link + "</a>"
+			
+			
+			
+			if (sorted(i).loaded) {
+				if (i < sorted.size - 1) str += "\n" + global.subtopicChangeMark + "\n" else str += "\n"
+			} else {
+				if (i < sorted.size - 1) str += "\n\n\n" + global.subtopicChangeMark + "\n" else str += "\n\n"
+				
+			}
+			str += "</div>"
+			
+		}
+		str += "</div>"
 		str += global.topicChangeMark + "\n"
 		str		
 	}
@@ -133,14 +228,14 @@ class Kalenteri() extends Topic("Kalenteri") {
 		str + "----\n"
 		
 	}
-	override def generateHtml(number: Int): String = {
+	override def generateHtmlSpecial(number: Int): String = {
 		
 		val now = Calendar.getInstance()
 		val week = now.get(Calendar.WEEK_OF_YEAR)
 		val day = now.get(Calendar.DAY_OF_MONTH)
- 		
+
 		var str = "\n\n<h2>" + number + ". " + this.name + "</h2>\n\nTällä viikolla\n"
-		
+
 		val date = LocalDate.now()
 		val nextWeek = date.plusWeeks(1)
 		val sorted = sortSubtopics
@@ -170,6 +265,9 @@ class Kalenteri() extends Topic("Kalenteri") {
 		str += "\n"
 		str + "----\n"
 		
+	}
+	override def generateHtml(number: Int): String = {
+		this.generateHtmlSpecial(number)
 	}
   
 }

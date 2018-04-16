@@ -11,6 +11,7 @@ class Mail {
 	val pohjanurkkaus = new Topic("Pohjanurkkaus")
 
 	var html = false
+	var specialHtml = false
 	
 	val topics = Vector(kalenteri, kilta, ayy, muut, pohjanurkkaus)
 
@@ -57,8 +58,16 @@ class Mail {
 		str
 	}
 	
+	def generateSpecialHtml = {
+		var str = ""
+		for (i <- topics.indices) {
+			str += topics(i).generateHtmlSpecial(i + 1)
+		}
+		str		
+	}
+	
 	def generateAll = {
-		if (!html)
+		if (!html && !specialHtml)
 			this.generateTableOfContents + generate
 		else {
 			val head = """
@@ -68,7 +77,12 @@ class Mail {
 <head>
     <meta charset="UTF-8">    
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base target="_parent">    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">  
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style>
         body {
             font-family: monospace;
@@ -102,8 +116,10 @@ class Mail {
 </body>
 </html>
 """
-			
-			head + this.generateTableOfContentsHtml + generateHtml + end
+			if (html)
+				head + this.generateTableOfContentsHtml + generateHtml + end
+			else
+				head + this.generateTableOfContentsHtml + generateSpecialHtml + end
 		}
 	}
 	

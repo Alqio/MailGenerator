@@ -64,11 +64,11 @@ object View extends SimpleSwingApplication {
 		val loadSubtopics = new Button("Load subtopics")
 		val removeSubtopic = new Button("Remove subtopic")
 		val htmlCheckbox = new CheckBox("HTML?")
-		
+		val specialHtmlCheckbox = new CheckBox("Special HTML?")
 		
 		val items = Array(subtopicName, topic, date, link, text, addButton,
 		    loadButton, saveButton, loadSubtopicButton, subtopic, topic, 
-		    loadSubtopics, removeSubtopic, htmlCheckbox, signup_start, signup_end)
+		    loadSubtopics, removeSubtopic, htmlCheckbox, signup_start, signup_end, specialHtmlCheckbox)
 
 		items.foreach(this.listenTo(_))
 		
@@ -117,6 +117,11 @@ object View extends SimpleSwingApplication {
 				  updateOutput()
 				} else if (source == htmlCheckbox) {
 					mail.html = !mail.html
+					mail.specialHtml = false
+					updateOutput()
+				} else if (source == specialHtmlCheckbox) {
+					mail.html = false
+					mail.specialHtml = true
 					updateOutput()
 				}
 			}
@@ -197,6 +202,7 @@ object View extends SimpleSwingApplication {
       layout += loadButton					-> new Constraints(4, 7, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
       layout += removeSubtopic			-> new Constraints(2, 7, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
       layout += htmlCheckbox	  		-> new Constraints(5, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
+      layout += specialHtmlCheckbox	-> new Constraints(5, 1, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(8, 5, 5, 5), 0, 0)
       
       layout += topic 							-> new Constraints(1, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
       layout += loadSubtopics 			-> new Constraints(2, 0, 1, 1, 0, 1, NorthWest.id, Fill.None.id, new Insets(5, 5, 5, 5), 0, 0)
