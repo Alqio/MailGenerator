@@ -37,6 +37,55 @@ class Topic(val name: String) {
 		str
 	}
 
+	def generateHtml(number: Int) = {
+		var str = "\n<h2>" + number + ". " + name + "</h2>\n\n"
+		val sorted = sortSubtopics
+
+		for (i <- 0 until sorted.size) {
+			str += "<u>" + number + "." + (i + 1) + " " + sorted(i).name + (if (sorted(i).displayDate) " " + sorted(i).date else "") + "</u>\n"
+
+			val textAsArray = sorted(i).text.split('\n')
+			val textFixedArray = Buffer[String]()
+			
+			for (line <- textAsArray) {
+				val splitted = line.split(' ')
+				println(splitted)
+				val beforeLink = splitted.takeWhile(word => !word.contains("http"))
+				println("before link: " + beforeLink.mkString(", "))
+				
+				if (beforeLink.size < splitted.size) {
+					val link = splitted(beforeLink.size)
+					println(link)
+					if (beforeLink.size == 0) {
+						splitted(beforeLink.size) = "\n\n<a href=\"" + link + "\">" + link + "</a>"
+					} else {
+						splitted(beforeLink.size) = "<a href=\"" + link + "\">" + link + "</a>"
+					}
+					
+				}
+				textFixedArray += splitted.mkString(" ")
+				
+
+			}
+			
+			
+			str += "<p>" + textFixedArray.mkString("\n") + "</p>"
+			
+			if (sorted(i).link != "") str += "\n\n" + "<a href=\"" + sorted(i).link + "\">" + sorted(i).link + "</a>"
+			
+			
+			if (sorted(i).loaded) {
+				if (i < sorted.size - 1) str += "\n" + global.subtopicChangeMark + "\n" else str += "\n"
+			} else {
+				if (i < sorted.size - 1) str += "\n\n\n" + global.subtopicChangeMark + "\n" else str += "\n\n"
+				
+			}
+			
+		}
+		str += global.topicChangeMark + "\n"
+		str		
+	}
+	
 	def generateHtmlSpecial(number: Int) = {
 		println("Generating html for number " + number)
 		var str = "\n<button type=\"button\" class=\"btn\" data-toggle=\"collapse\" data-target=\"#" + name.replace(' ', '_').replace('&', 'U') + 
@@ -79,13 +128,7 @@ class Topic(val name: String) {
 				}
 				textFixedArray += splitted.mkString(" ")
 				
-//				if (line.startsWith("http")) {
-//					val link = line.takeWhile(c => c != ' ' && c != '\n')
-//					val l = "\n\n<a href=\"" + link + "\">" + link + "</a>"
-//					textFixedArray += l
-//				} else {
-//					textFixedArray += line
-//				}
+
 			}
 			
 			
@@ -215,6 +258,9 @@ class Kalenteri() extends Topic("Kalenteri") {
 		str += "\n"
 		str + "----\n"
 		
+	}
+	override def generateHtml(number: Int): String = {
+		this.generateHtmlSpecial(number)
 	}
   
 }

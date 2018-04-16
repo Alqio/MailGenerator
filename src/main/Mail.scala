@@ -53,7 +53,7 @@ class Mail {
 	def generateHtml = {
 		var str = ""
 		for (i <- topics.indices) {
-			//str += topics(i).generateHtml(i + 1)
+			str += topics(i).generateHtml(i + 1)
 		}
 		str
 	}
