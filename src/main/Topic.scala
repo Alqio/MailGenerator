@@ -7,7 +7,6 @@ import java.time._
 class Topic(val name: String) {
 	val subtopics = Buffer[Subtopic]()
 
-
 	def addSubtopic(subtopic: Subtopic) = {
 		this.subtopics += subtopic
 	}
@@ -18,6 +17,14 @@ class Topic(val name: String) {
 	def sortSubtopics = {
 		val sorted = subtopics.toArray
 		util.Sorting.quickSort(sorted)(SubtopicOrdering)
+		sorted
+	}
+	/**
+	 * Order subtopics by date, ascending
+	 */
+	def sortSubtopicsBySignup = {
+		val sorted = subtopics.toArray
+		util.Sorting.quickSort(sorted)(SubtopicOrdering2)
 		sorted
 	}
 
@@ -35,7 +42,7 @@ class Topic(val name: String) {
 		val sorted = sortSubtopics
 
 		for (i <- 0 until sorted.size) {
-			str += "<u>" + number + "." + (i + 1) + " " + sorted(i).name + " " + sorted(i).date + "</u>\n<p>" + sorted(i).text + "</p>"
+			str += "<u>" + number + "." + (i + 1) + " " + sorted(i).name + (if (sorted(i).displayDate) " " + sorted(i).date else "") + "</u>\n<p>" + sorted(i).text + "</p>"
 			
 			if (sorted(i).link != "") str += "\n\n" + "<a href=\"" + sorted(i).link + "\">" + sorted(i).link + "</a>"
 			
@@ -94,7 +101,7 @@ class Kalenteri() extends Topic("Kalenteri") {
 		val week = now.get(Calendar.WEEK_OF_YEAR)
 		val day = now.get(Calendar.DAY_OF_MONTH)
 		
- 		var str = "\n\n" + number + ". " + this.name + "\n\nTällä viikolla\n"
+ 		var str = "\n\n<h2>" + number + ". " + this.name + "</h2>\n\nTällä viikolla\n"
 		
 		val date = LocalDate.now()
 		val nextWeek = date.plusWeeks(1)
@@ -114,7 +121,10 @@ class Kalenteri() extends Topic("Kalenteri") {
 		
 		//Signups
 		str += "Tällä viikolla auki olevat ilmoittautumiset\n"
-		val signups = sorted.filter(s => s.signup_start.innerDate.isBefore(nextWeek) && s.signup_end.innerDate.isAfter(date))
+		
+		val sorted2 = sortSubtopicsBySignup
+		
+		val signups = sorted2.filter(s => s.signup_start.innerDate.isBefore(nextWeek) && s.signup_end.innerDate.isAfter(date))
 		
 		for (subtopic <- signups) {
 			str += "  " + subtopic.signup_start + " - " + subtopic.signup_end + " " + subtopic.name + "\n"

@@ -31,6 +31,15 @@ class Mail {
 		str += "\n" + global.topicChangeMark
 		str
 	}
+	
+	def generateTableOfContentsHtml = {
+		var str = "<h2>Sisällysluettelo</h2>\n"
+		for (i <- 0 until topics.size) {
+			str += topics(i).generateTableOfContents(i + 1)
+		}
+		str += "\n" + global.topicChangeMark
+		str	  
+	}
 
 	def generate = {
 		var str = ""
@@ -51,8 +60,51 @@ class Mail {
 	def generateAll = {
 		if (!html)
 			this.generateTableOfContents + generate
-		else
-			this.generateTableOfContents + generateHtml
+		else {
+			val head = """
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <style>
+        body {
+            font-family: monospace;
+            border: 0px;
+            margin: 0px;
+            padding: 0px;
+            display: block;
+            font-size: 14px;
+            line-height: 150%;
+        }
+        pre {
+            white-space:pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap:break-word;
+        }
+    </style>
+    
+</head>
+
+
+<body>
+<div class="container">
+<PRE>
+"""
+			
+			val end = """
+</PRE>
+</div>
+</body>
+</html>
+"""
+			
+			head + this.generateTableOfContentsHtml + generateHtml + end
+		}
 	}
 	
 
