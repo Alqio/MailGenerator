@@ -88,7 +88,7 @@ class Topic(val name: String) {
 
 class Kalenteri() extends Topic("Kalenteri") {
 	
-	def sortSubtopicsBySignup = {
+	override def sortSubtopicsBySignup = {
 		val sorted = subtopics.toArray
 		util.Sorting.quickSort(sorted)(SubtopicOrdering2)
 		sorted
@@ -101,7 +101,7 @@ class Kalenteri() extends Topic("Kalenteri") {
 		val week = now.get(Calendar.WEEK_OF_YEAR)
 		val day = now.get(Calendar.DAY_OF_MONTH)
 		
- 		var str = "\n\n<h2>" + number + ". " + this.name + "</h2>\n\nTällä viikolla\n"
+ 		var str = "\n\n" + number + ". " + this.name + "\n\nTällä viikolla\n"
 		
 		val date = LocalDate.now()
 		val nextWeek = date.plusWeeks(1)
@@ -138,8 +138,8 @@ class Kalenteri() extends Topic("Kalenteri") {
 		val now = Calendar.getInstance()
 		val week = now.get(Calendar.WEEK_OF_YEAR)
 		val day = now.get(Calendar.DAY_OF_MONTH)
-		
- 		var str = "\n\n" + number + ". " + this.name + "\n\nTällä viikolla\n"
+ 		
+		var str = "\n\n<h2>" + number + ". " + this.name + "</h2>\n\nTällä viikolla\n"
 		
 		val date = LocalDate.now()
 		val nextWeek = date.plusWeeks(1)
