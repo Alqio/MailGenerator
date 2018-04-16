@@ -80,7 +80,12 @@ class Topic(val name: String) {
 }
 
 class Kalenteri() extends Topic("Kalenteri") {
-  
+	
+	def sortSubtopicsBySignup = {
+		val sorted = subtopics.toArray
+		util.Sorting.quickSort(sorted)(SubtopicOrdering2)
+		sorted
+	}  
   override def generateTableOfContents(n: Int) = n + ". " + this.name + "\n"
   
 	override def generate(number: Int): String = {
@@ -144,6 +149,9 @@ class Kalenteri() extends Topic("Kalenteri") {
 		
 		//Signups
 		str += "Tällä viikolla auki olevat ilmoittautumiset\n"
+		
+		val sorted2 = sortSubtopicsBySignup
+		
 		val signups = sorted.filter(s => s.signup_start.innerDate.isBefore(nextWeek) && s.signup_end.innerDate.isAfter(date))
 		
 		for (subtopic <- signups) {
@@ -159,6 +167,10 @@ class Kalenteri() extends Topic("Kalenteri") {
 
 object SubtopicOrdering extends Ordering[Subtopic] {
 	def compare(a: Subtopic, b: Subtopic) = a.date compare b.date
+}
+
+object SubtopicOrdering2 extends Ordering[Subtopic] {
+	def compare(a: Subtopic, b: Subtopic) = a.signup_end compare b.signup_end
 }
 
 class Subtopic(val name: String, val date: Date, val link: String = "", val loaded: Boolean = false) {
