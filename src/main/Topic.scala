@@ -49,7 +49,8 @@ class Topic(val name: String) {
 
 		for (i <- 0 until sorted.size) {
 			
-			val realName = sorted(i).name.replace(' ', '_')
+			val realName = sorted(i).name.replace(' ', '_').map(x => if (x.isLetter) x else "ZZ").mkString
+			println(realName)
 			
 			str += "\n<button type=\"button\" class=\"btn\" data-toggle=\"collapse\" data-target=\"#" + realName +
 						 "\"><i class=\"fa fa-plus-circle\" style=\"font-size:16px\"></i>  "+ number + "."+ (i + 1) + " " + sorted(i).name + 
@@ -57,7 +58,38 @@ class Topic(val name: String) {
 			
 			str += "<div id=\"" + realName + "\" class=\"collapse\">\n\n"
 			
-			str += "<p>" + sorted(i).text + "</p>"
+			val textAsArray = sorted(i).text.split('\n')
+			val textFixedArray = Buffer[String]()
+			
+			for (line <- textAsArray) {
+				val splitted = line.split(' ')
+				println(splitted)
+				val beforeLink = splitted.takeWhile(word => !word.contains("http"))
+				println("before link: " + beforeLink.mkString(", "))
+				
+				if (beforeLink.size < splitted.size) {
+					val link = splitted(beforeLink.size)
+					println(link)
+					if (beforeLink.size == 0) {
+						splitted(beforeLink.size) = "\n\n<a href=\"" + link + "\">" + link + "</a>"
+					} else {
+						splitted(beforeLink.size) = "<a href=\"" + link + "\">" + link + "</a>"
+					}
+					
+				}
+				textFixedArray += splitted.mkString(" ")
+				
+//				if (line.startsWith("http")) {
+//					val link = line.takeWhile(c => c != ' ' && c != '\n')
+//					val l = "\n\n<a href=\"" + link + "\">" + link + "</a>"
+//					textFixedArray += l
+//				} else {
+//					textFixedArray += line
+//				}
+			}
+			
+			
+			str += "<p>" + textFixedArray.mkString("\n") + "</p>"
 			
 			//str += "<u>" + number + "." + (i + 1) + " " + sorted(i).name + (if (sorted(i).displayDate) " " + sorted(i).date else "") + "</u>\n<p>" + sorted(i).text + "</p>"
 			
