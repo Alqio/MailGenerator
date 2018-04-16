@@ -182,7 +182,12 @@ class Topic(val name: String) {
 }
 
 class Kalenteri() extends Topic("Kalenteri") {
-  
+	
+	override def sortSubtopicsBySignup = {
+		val sorted = subtopics.toArray
+		util.Sorting.quickSort(sorted)(SubtopicOrdering2)
+		sorted
+	}  
   override def generateTableOfContents(n: Int) = n + ". " + this.name + "\n"
   
 	override def generate(number: Int): String = {
@@ -228,8 +233,7 @@ class Kalenteri() extends Topic("Kalenteri") {
 		val now = Calendar.getInstance()
 		val week = now.get(Calendar.WEEK_OF_YEAR)
 		val day = now.get(Calendar.DAY_OF_MONTH)
-		
- 		
+
 		var str = "\n\n<h2>" + number + ". " + this.name + "</h2>\n\nTällä viikolla\n"
 
 		val date = LocalDate.now()
@@ -250,6 +254,9 @@ class Kalenteri() extends Topic("Kalenteri") {
 		
 		//Signups
 		str += "Tällä viikolla auki olevat ilmoittautumiset\n"
+		
+		val sorted2 = sortSubtopicsBySignup
+		
 		val signups = sorted.filter(s => s.signup_start.innerDate.isBefore(nextWeek) && s.signup_end.innerDate.isAfter(date))
 		
 		for (subtopic <- signups) {
