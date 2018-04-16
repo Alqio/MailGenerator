@@ -11,6 +11,7 @@ class Mail {
 	val pohjanurkkaus = new Topic("Pohjanurkkaus")
 
 	var html = false
+	var specialHtml = false
 	
 	val topics = Vector(kalenteri, kilta, ayy, muut, pohjanurkkaus)
 
@@ -52,13 +53,21 @@ class Mail {
 	def generateHtml = {
 		var str = ""
 		for (i <- topics.indices) {
-			str += topics(i).generateHtml(i + 1)
+			//str += topics(i).generateHtml(i + 1)
 		}
 		str
 	}
 	
+	def generateSpecialHtml = {
+		var str = ""
+		for (i <- topics.indices) {
+			str += topics(i).generateHtmlSpecial(i + 1)
+		}
+		str		
+	}
+	
 	def generateAll = {
-		if (!html)
+		if (!html && !specialHtml)
 			this.generateTableOfContents + generate
 		else {
 			val head = """
@@ -107,8 +116,10 @@ class Mail {
 </body>
 </html>
 """
-			
-			head + this.generateTableOfContentsHtml + generateHtml + end
+			if (html)
+				head + this.generateTableOfContentsHtml + generateHtml + end
+			else
+				head + this.generateTableOfContentsHtml + generateSpecialHtml + end
 		}
 	}
 	

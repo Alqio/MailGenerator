@@ -37,7 +37,7 @@ class Topic(val name: String) {
 		str
 	}
 
-	def generateHtml(number: Int) = {
+	def generateHtmlSpecial(number: Int) = {
 		println("Generating html for number " + number)
 		var str = "\n<button type=\"button\" class=\"btn\" data-toggle=\"collapse\" data-target=\"#" + name.replace(' ', '_').replace('&', 'U') + 
 							"\"><h2><i class=\"fa fa-plus-circle\" style=\"font-size:24px\"></i>  "+ number + ". " + name + "</h2></button>\n"
@@ -180,7 +180,7 @@ class Kalenteri() extends Topic("Kalenteri") {
 		str + "----\n"
 		
 	}
-	override def generateHtml(number: Int): String = {
+	override def generateHtmlSpecial(number: Int): String = {
 		
 		val now = Calendar.getInstance()
 		val week = now.get(Calendar.WEEK_OF_YEAR)
