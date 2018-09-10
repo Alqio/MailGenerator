@@ -202,7 +202,7 @@ class Kalenteri() extends Topic("Kalenteri") {
 		val nextWeek = date.plusWeeks(1)
 		val sorted = sortSubtopics
 		val thisweek = sorted.filter(s => s.date.innerDate.isBefore(nextWeek))
-		val nextweek = sorted.filter(s => s.date.innerDate.isBefore(nextWeek.plusWeeks(1)) && s.date.innerDate.isAfter(nextWeek))
+		val nextweek = sorted.filter(s => (s.date.innerDate.isBefore(nextWeek.plusWeeks(1)) && s.date.innerDate.isAfter(nextWeek)) || s.date.innerDate.isEqual(nextWeek))
 		
 		for (i <- 0 until thisweek.size) {
 			str += "  " + thisweek(i).date + " " + thisweek(i).name + "\n"
