@@ -2,7 +2,7 @@
 
 This is a software that I'm using for writing weekly letters to our organization's members.
 
-###Features
+##Features
 * Produces a neatly categorized and consistent mail
 * Organizes sub topics to topics
 * Sorts sub topics by date
@@ -11,7 +11,7 @@ This is a software that I'm using for writing weekly letters to our organization
 * Can create normal text files, html files that have style (bold, underscore & links) and special html files (drop down menus)
 * Preview your mail while writing it
 
-###Usage
+### Usage
 Requirements: scala 2.12, sbt 1.2.4, OpenJDK 8. Might work on other versions too.
 
 Compile:
@@ -29,7 +29,7 @@ sbt assembly
 
 For assembly, this project uses [sbt-assembly](https://github.com/sbt/sbt-assembly).
 
-###Notes
+### Notes
 * You can not edit sub topics. Instead, you have to select it, remove it and then edit it and the add it back.
 * The software assumes that the weekly mail is written during monday and counts this week's and next week's events based on that.
 * You can not edit topics inside the editor, you have to change the code if there is need for that (not very difficult though)
