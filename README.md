@@ -29,6 +29,11 @@ sbt assembly
 
 For assembly, this project uses [sbt-assembly](https://github.com/sbt/sbt-assembly).
 
+Running from command line after assembly:
+```$xslt
+java -jar MailGenerator-assembly-1.1.jar
+```
+
 ### Notes
 * You can not edit sub topics. Instead, you have to select it, remove it and then edit it and the add it back.
 * The software assumes that the weekly mail is written during monday and counts this week's and next week's events based on that.
