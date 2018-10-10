@@ -2,7 +2,7 @@
 
 This is a software that I'm using for writing weekly letters to our organization's members.
 
-##Features
+### Features
 * Produces a neatly categorized and consistent mail
 * Organizes sub topics to topics
 * Sorts sub topics by date
