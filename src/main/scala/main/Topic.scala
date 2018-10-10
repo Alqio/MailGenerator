@@ -7,28 +7,28 @@ import java.time._
 class Topic(val name: String) {
 	val subtopics = Buffer[Subtopic]()
 
-	def addSubtopic(subtopic: Subtopic) = {
+	def addSubtopic(subtopic: Subtopic): Unit = {
 		this.subtopics += subtopic
 	}
 
 	/**
 	 * Order subtopics by date, ascending
 	 */
-	def sortSubtopics = {
+	def sortSubtopics: Array[Subtopic] = {
 		val sorted = subtopics.toArray
 		util.Sorting.quickSort(sorted)(SubtopicOrdering)
 		sorted
 	}
 	/**
-	 * Order subtopics by date, ascending
+	 * Order subtopics by signup date, ascending
 	 */
-	def sortSubtopicsBySignup = {
+	def sortSubtopicsBySignup: Array[Subtopic] = {
 		val sorted = subtopics.toArray
 		util.Sorting.quickSort(sorted)(SubtopicOrdering2)
 		sorted
 	}
 
-	def generateTableOfContents(number: Int) = {
+	def generateTableOfContents(number: Int): String = {
 		var str = number + ". " + name + "\n"
 		val sorted = sortSubtopics
 		for (i <- 0 until subtopics.size) {
@@ -37,7 +37,12 @@ class Topic(val name: String) {
 		str
 	}
 
-	def generateHtml(number: Int) = {
+	/**
+		* Generates the HTML version of the Topic's contents
+		* @param number
+		* @return String
+		*/
+	def generateHtml(number: Int): String = {
 		var str = "\n<h2>" + number + ". " + name + "</h2>\n\n"
 		val sorted = sortSubtopics
 
@@ -85,8 +90,13 @@ class Topic(val name: String) {
 		str += global.topicChangeMark + "\n"
 		str		
 	}
-	
-	def generateHtmlSpecial(number: Int) = {
+
+	/**
+		* Generates the Special HTML with drop down lists of the Topic's contents
+		* @param number
+		* @return
+		*/
+	def generateHtmlSpecial(number: Int): String = {
 		println("Generating html for number " + number)
 		var str = "\n<button type=\"button\" class=\"btn\" data-toggle=\"collapse\" data-target=\"#" + name.replace(' ', '_').replace('&', 'U') + 
 							"\"><h2><i class=\"fa fa-plus-circle\" style=\"font-size:24px\"></i>  "+ number + ". " + name + "</h2></button>\n"
@@ -134,12 +144,9 @@ class Topic(val name: String) {
 			
 			str += "<p>" + textFixedArray.mkString("\n") + "</p>"
 			
-			//str += "<u>" + number + "." + (i + 1) + " " + sorted(i).name + (if (sorted(i).displayDate) " " + sorted(i).date else "") + "</u>\n<p>" + sorted(i).text + "</p>"
-			
 			if (sorted(i).link != "") str += "\n\n" + "<a href=\"" + sorted(i).link + "\">" + sorted(i).link + "</a>"
 			
-			
-			
+
 			if (sorted(i).loaded) {
 				if (i < sorted.size - 1) str += "\n" + global.subtopicChangeMark + "\n" else str += "\n"
 			} else {
@@ -153,8 +160,13 @@ class Topic(val name: String) {
 		str += global.topicChangeMark + "\n"
 		str		
 	}
-	
-	def generate(number: Int) = {
+
+	/**
+		* Generates the normal text of this Topic's contents
+		* @param number
+		* @return
+		*/
+	def generate(number: Int): String = {
 		var str = "\n" + number + ". " + name + "\n\n"
 		val sorted = sortSubtopics
 
@@ -177,18 +189,18 @@ class Topic(val name: String) {
 		str
 	}
 
-	override def toString = this.name
+	override def toString: String = this.name
 	
 }
 
 class Kalenteri() extends Topic("Kalenteri") {
 	
-	override def sortSubtopicsBySignup = {
+	override def sortSubtopicsBySignup: Array[Subtopic] = {
 		val sorted = subtopics.toArray
 		util.Sorting.quickSort(sorted)(SubtopicOrdering2)
 		sorted
 	}  
-  override def generateTableOfContents(n: Int) = n + ". " + this.name + "\n"
+  override def generateTableOfContents(n: Int): String = n + ". " + this.name + "\n"
   
 	override def generate(number: Int): String = {
 		
