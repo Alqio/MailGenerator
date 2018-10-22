@@ -105,7 +105,16 @@ class Mail {
             word-wrap:break-word;
         }
     </style>
-    
+
+    <script>
+        $(document).ready(function() {
+            $(".btn").click(function () {
+                $(this).find('i').toggleClass('fas fa-minus-circle');
+            });
+        });
+ 
+    </script>    
+
 </head>
 
 
