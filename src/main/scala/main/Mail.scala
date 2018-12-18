@@ -2,29 +2,33 @@ package main
 
 import collection.mutable.Map
 
+/**
+	* Class Mail represents the actual mail (surprise?). It consists of Topics which in turn consist of sub topics.
+	*/
 class Mail {
 
-	val kalenteri = new Kalenteri()
-	val kilta = new Topic("Kilta")
+	val calendar = new Kalenteri()
+	val guild = new Topic("Kilta")
 	val ayy = new Topic("AYY & Aalto")
-	val muut = new Topic("Muut")
-	val pohjanurkkaus = new Topic("Pohjanurkkaus")
+	val other = new Topic("Muut")
+	val bottomCorner = new Topic("Pohjanurkkaus")
 
 	var html = false
 	var specialHtml = false
 	
-	val topics = Vector(kalenteri, kilta, ayy, muut, pohjanurkkaus)
+	val topics = Vector(calendar, guild, ayy, other, bottomCorner)
 
-	def addSubtopicToTopic(topic: Topic, subtopic: Subtopic) = {
+	def addSubtopicToTopic(topic: Topic, subtopic: Subtopic): Unit = {
 		topic.addSubtopic(subtopic)
-		kalenteri.addSubtopic(subtopic)
-	}
-	def removeSubtopicFromTopic(topic: Topic, subtopic: Subtopic) = {
-		topic.subtopics.remove(topic.subtopics.indexOf(subtopic))
-		kalenteri.subtopics.remove(kalenteri.subtopics.indexOf(subtopic))
+		calendar.addSubtopic(subtopic)
 	}
 
-	def generateTableOfContents = {
+	def removeSubtopicFromTopic(topic: Topic, subtopic: Subtopic): Unit = {
+		topic.subtopics.remove(topic.subtopics.indexOf(subtopic))
+		calendar.subtopics.remove(calendar.subtopics.indexOf(subtopic))
+	}
+
+	def generateTableOfContents: String = {
 		var str = "Sisällysluettelo\n"
 		for (i <- 0 until topics.size) {
 			str += topics(i).generateTableOfContents(i + 1)
@@ -33,7 +37,7 @@ class Mail {
 		str
 	}
 	
-	def generateTableOfContentsHtml = {
+	def generateTableOfContentsHtml: String = {
 		var str = "<h2>Sisällysluettelo</h2>\n"
 		for (i <- 0 until topics.size) {
 			str += topics(i).generateTableOfContents(i + 1)
@@ -42,7 +46,7 @@ class Mail {
 		str	  
 	}
 
-	def generate = {
+	def generate: String = {
 		var str = ""
 		for (i <- topics.indices) {
 			str += topics(i).generate(i + 1)
@@ -50,7 +54,7 @@ class Mail {
 		str
 	}
 
-	def generateHtml = {
+	def generateHtml: String = {
 		var str = ""
 		for (i <- topics.indices) {
 			str += topics(i).generateHtml(i + 1)
@@ -58,7 +62,7 @@ class Mail {
 		str
 	}
 	
-	def generateSpecialHtml = {
+	def generateSpecialHtml: String = {
 		var str = ""
 		for (i <- topics.indices) {
 			str += topics(i).generateHtmlSpecial(i + 1)
@@ -66,7 +70,7 @@ class Mail {
 		str		
 	}
 	
-	def generateAll = {
+	def generateAll: String = {
 		if (!html && !specialHtml)
 			this.generateTableOfContents + generate
 		else {
@@ -101,7 +105,16 @@ class Mail {
             word-wrap:break-word;
         }
     </style>
-    
+
+    <script>
+        $(document).ready(function() {
+            $(".btn").click(function () {
+                $(this).find('i').toggleClass('fas fa-minus-circle');
+            });
+        });
+ 
+    </script>    
+
 </head>
 
 
@@ -125,6 +138,10 @@ class Mail {
 	
 
 }
+
+/**
+	* A Mail singleton object that is used for loading mails and then creating Mail instances based on that
+	*/
 object Mail {
 
 	/**
@@ -166,18 +183,18 @@ object Mail {
 		//Drop until we are the first subtopic in section 2. Kilta
 		text = text.dropWhile(_ != "2. Kilta").drop(2)
 
-		move(mail.kilta)
+		move(mail.guild)
 		move(mail.ayy)
-		move(mail.muut)
-		move(mail.pohjanurkkaus)
+		move(mail.other)
+		move(mail.bottomCorner)
 
-		def move(topic: Topic) = {
+		def move(topic: Topic): Unit = {
 			try {
 				do {
 					addSubtopic(topic)
 				} while (text.size > 0 && text(1) == "---")
 				
-				//Eli nyt text(1) pitäisi olla "----", koska on aiheenvaihdon aika
+				//Now text(1) should be "----", because it's time to change topics
 				text = text.dropWhile(row => row == "").drop(3).dropWhile(row => row == "")
 				println(text.take(3).mkString("\n"))
 			} catch {
@@ -185,7 +202,7 @@ object Mail {
 			}
 		}
 
-		def addSubtopic(topic: Topic) = {
+		def addSubtopic(topic: Topic): Unit = {
 			if (text(1) == "---") {
 				text = text.drop(2)
 			}
@@ -213,8 +230,6 @@ object Mail {
 
 			if (!subtopic.date.isPast) mail.addSubtopicToTopic(topic, subtopic)
 
-			//println(subtopic.text)
-			//println(topic.generate(2))
 		}
 
 		//Add signup dates for signups now that they have been created
@@ -222,7 +237,7 @@ object Mail {
 			val name = signup._1
 			val date = signup._2
 
-			for (subtopic <- mail.kilta.subtopics ++ mail.ayy.subtopics ++ mail.muut.subtopics) {
+			for (subtopic <- mail.guild.subtopics ++ mail.ayy.subtopics ++ mail.other.subtopics) {
 				if (subtopic.name == name) {
 					subtopic.signup_start = date._1
 					subtopic.signup_end = date._2
@@ -230,10 +245,6 @@ object Mail {
 			}
 			
 		}
-		
-		println("@@@@@@@@@@")
-		//println(text.mkString("\n"))
-		//println(mail.generateAll)
 		mail
 	}
 
