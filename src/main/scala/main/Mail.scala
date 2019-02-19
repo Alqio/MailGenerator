@@ -111,6 +111,23 @@ class Mail {
             $(".btn").click(function () {
                 $(this).find('i').toggleClass('fas fa-minus-circle');
             });
+            $(".calendarSpecial").click(function() {
+                let t = $(this);
+                let name = t.attr("name");
+
+                let el = $(document).find("#" + name);
+                let parent = el.parent();
+
+                el.addClass('in');
+                parent.addClass('in');
+
+                let target = "#" + parent.attr('id');
+                let el2 = $("button[data-target='" + target +"']");
+
+                parent.find('i').toggleClass('fas fa-minus-circle');
+                el2.find('i').toggleClass('fas fa-minus-circle');
+
+						});
         });
  
     </script>    
