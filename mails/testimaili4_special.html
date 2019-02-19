@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base target="_parent">    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">  
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            font-family: monospace;
+            border: 0px;
+            margin: 0px;
+            padding: 0px;
+            display: block;
+            font-size: 14px;
+            line-height: 150%;
+        }
+        pre {
+            white-space:pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap:break-word;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function() {
+            $(".btn").click(function () {
+                $(this).find('i').toggleClass('fas fa-minus-circle');
+            });
+            $(".calendarSpecial").click(function() {
+                let t = $(this);
+                console.log(t);
+                let name = t.attr("name");
+
+                let el = $("#" + name);
+                let parent = el.parent();
+
+                console.log(el);
+                console.log(parent);
+
+                el.addClass('in');
+                parent.addClass('in');
+
+                let target = "#" + parent.attr('id');
+                console.log(target);
+                let el2 = $("button[data-target='" + target +"']");
+
+                //miks tää on iha vitun buginen paska
+                let is = parent.find('i');
+                for (let i = 0; i < is.length; i++) {
+                    let element = is[i];
+                    let p = $(element).parent();
+
+                    if (p.attr("data-target") === "#" + name) {
+                        console.log("jo");
+                        $(element).addClass('fas fa-minus-circle');
+                    }
+                }
+                //parent.find('i').addClass('fas fa-minus-circle');
+                el2.find('i').addClass('fas fa-minus-circle');
+
+            });
+        });
+ 
+    </script>    
+
+</head>
+
+
+<body>
+<div class="container">
+<PRE>
+<h2>Sisällysluettelo</h2>
+1. Kalenteri
+2. Kilta
+  2.1 aihe1
+  2.2 aihe2
+3. AYY & Aalto
+  3.1 
+4. Muut
+5. Pohjanurkkaus
+
+----
+
+<h2>1. Kalenteri</h2>
+
+Tällä viikolla
+  23.2. aihe1
+Ensi viikolla
+  27.2. aihe2
+
+Tällä viikolla auki olevat ilmoittautumiset
+  <a href="#aihe1" class="calendarSpecial" name="aihe1">14.2. - 22.2. aihe1</a>
+  <a href="#aihe2" class="calendarSpecial" name="aihe2">15.2. - 26.2. aihe2</a>
+
+----
+
+<button type="button" class="btn" data-toggle="collapse" data-target="#Kilta"><h2><i class="fa fa-plus-circle" style="font-size:24px"></i>  2. Kilta</h2></button>
+<div id="Kilta" class="collapse">
+
+
+<button type="button" class="btn" data-toggle="collapse" data-target="#aihe1"><i class="fa fa-plus-circle" style="font-size:16px"></i>  2.1 aihe1 23.2.</u></button>
+<div id="aihe1" class="collapse">
+
+<p>tässä on aihe missä on tekstiäää
+
+
+
+<a href="https://tietokilta.fi">https://tietokilta.fi</a></p>
+---
+</div>
+<button type="button" class="btn" data-toggle="collapse" data-target="#aihe2"><i class="fa fa-plus-circle" style="font-size:16px"></i>  2.2 aihe2 27.2.</u></button>
+<div id="aihe2" class="collapse">
+
+<p>tässä on aihe missä on tekstiäää lisää tää on muuten aihe 2 jee jee :DD
+
+
+
+<a href="https://tietokilta.fi/tapahtumat/">https://tietokilta.fi/tapahtumat/</a></p>
+</div></div>----
+
+<button type="button" class="btn" data-toggle="collapse" data-target="#AYY_U_Aalto"><h2><i class="fa fa-plus-circle" style="font-size:24px"></i>  3. AYY & Aalto</h2></button>
+<div id="AYY_U_Aalto" class="collapse">
+
+
+<button type="button" class="btn" data-toggle="collapse" data-target="#"><i class="fa fa-plus-circle" style="font-size:16px"></i>  3.1 </u></button>
+<div id="" class="collapse">
+
+<p>
+4. Muut</p>
+</div></div>----
+
+<button type="button" class="btn" data-toggle="collapse" data-target="#Muut"><h2><i class="fa fa-plus-circle" style="font-size:24px"></i>  4. Muut</h2></button>
+<div id="Muut" class="collapse">
+
+</div>----
+
+<button type="button" class="btn" data-toggle="collapse" data-target="#Pohjanurkkaus"><h2><i class="fa fa-plus-circle" style="font-size:24px"></i>  5. Pohjanurkkaus</h2></button>
+<div id="Pohjanurkkaus" class="collapse">
+
+</div>----
+
+</PRE>
+</div>
+</body>
+</html>

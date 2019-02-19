@@ -91,9 +91,6 @@ class Topic(val name: String) {
 		str		
 	}
 
-	def generateSlug(subtopic: Subtopic): String = {
-		subtopic.name.replace(' ', '_').map(x => if (x.isLetter) x else ('a' + x) % 'a').mkString
-	}
 
 	/**
 		* Generates the Special HTML with drop down lists of the Topic's contents
@@ -112,7 +109,7 @@ class Topic(val name: String) {
 
 		for (i <- 0 until sorted.size) {
 			
-			val realName = generateSlug(sorted(i))
+			val realName = sorted(i).slug
 			println(realName)
 			
 			str += "\n<button type=\"button\" class=\"btn\" data-toggle=\"collapse\" data-target=\"#" + realName +
@@ -252,6 +249,7 @@ class Kalenteri() extends Topic("Kalenteri") {
 		var str = "\n\n<h2>" + number + ". " + this.name + "</h2>\n\nTällä viikolla\n"
 
 		val date = LocalDate.now()
+
 		val nextWeek = date.plusWeeks(1)
 		val sorted = sortSubtopics
 		val thisweek = sorted.filter(s => s.date.innerDate.isBefore(nextWeek))
@@ -277,7 +275,7 @@ class Kalenteri() extends Topic("Kalenteri") {
 		for (subtopic <- signups) {
 			//str += "  " + subtopic.signup_start + " - " + subtopic.signup_end + " " + subtopic.name + "\n"
 			val t = subtopic.signup_start + " - " + subtopic.signup_end + " " + subtopic.name
-			str += "  <a href=\"#" + generateSlug(subtopic) + "\" class=\"calendarSpecial\" id=\"" + subtopic.name + "\" name=\"" + generateSlug(subtopic) + "\">" + t + "</a>\n"
+			str += "  <a href=\"#" + subtopic.slug + "\" class=\"calendarSpecial\" name=\"" + subtopic.slug + "\">" + t + "</a>\n"
 			//<a href="#aiheZZ" class="calendar" id="aihe1" name="aiheZZ">23.2. aihe1</a>
 		}
 		str += "\n"
@@ -310,8 +308,11 @@ class Subtopic(val name: String, val date: Date, val link: String = "", val load
 		displayDate = false
 	}
 	
-	override def toString = name
-	
+	override def toString: String = name
+
+
+	def slug: String = name.replace(' ', '_').map(x => if (x.isLetter || x.isDigit) x else "ZZ").mkString
+
 	def this(name: String, date: Date, loaded: Boolean) = {
 		this(name, date, "", loaded)
 	}
