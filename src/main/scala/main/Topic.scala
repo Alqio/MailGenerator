@@ -32,7 +32,28 @@ class Topic(val name: String) {
 		var str = number + ". " + name + "\n"
 		val sorted = sortSubtopics
 		for (i <- 0 until subtopics.size) {
+			val subtopic = sorted(i)
 			str += "  " + (number + "." + (i + 1) + " " + sorted(i).name) + "\n"
+		}
+		str
+	}
+
+	def generateTableOfContentsHtml(number: Int): String = {
+		var str = number + ". " + name + "\n"
+		val sorted = sortSubtopics
+		for (i <- 0 until subtopics.size) {
+			val subtopic = sorted(i)
+			str += "<a href=\"#" + subtopic.slug + "\" class=\"calendar\" name=\"" + subtopic.slug + "\">" + (number + "." + (i + 1) + " " + sorted(i).name) + "</a>\n"
+		}
+		str
+	}
+
+	def generateTableOfContentsSpecialHtml(number: Int): String = {
+		var str = number + ". " + name + "\n"
+		val sorted = sortSubtopics
+		for (i <- 0 until subtopics.size) {
+			val subtopic = sorted(i)
+			str += "<a href=\"#" + subtopic.slug + "\" class=\"calendarSpecial\" name=\"" + subtopic.slug + "\">" + (number + "." + (i + 1) + " " + sorted(i).name) + "</a>\n"
 		}
 		str
 	}
@@ -201,7 +222,11 @@ class Kalenteri() extends Topic("Kalenteri") {
 		sorted
 	}  
   override def generateTableOfContents(n: Int): String = n + ". " + this.name + "\n"
-  
+
+	override def generateTableOfContentsHtml(number: Int): String = this.generateTableOfContents(number)
+
+	override def generateTableOfContentsSpecialHtml(number: Int): String = this.generateTableOfContents(number)
+
 	override def generate(number: Int): String = {
 		
 		val now = Calendar.getInstance()
@@ -273,9 +298,9 @@ class Kalenteri() extends Topic("Kalenteri") {
 		val signups = sorted.filter(s => s.signup_start.innerDate.isBefore(nextWeek) && s.signup_end.innerDate.isAfter(date))
 		
 		for (subtopic <- signups) {
-			//str += "  " + subtopic.signup_start + " - " + subtopic.signup_end + " " + subtopic.name + "\n"
+			str += "  " + subtopic.signup_start + " - " + subtopic.signup_end + " " + subtopic.name + "\n"
 			val t = subtopic.signup_start + " - " + subtopic.signup_end + " " + subtopic.name
-			str += "  <a href=\"#" + subtopic.slug + "\" class=\"calendarSpecial\" name=\"" + subtopic.slug + "\">" + t + "</a>\n"
+			//str += "  <a href=\"#" + subtopic.slug + "\" class=\"calendarSpecial\" name=\"" + subtopic.slug + "\">" + t + "</a>\n"
 			//<a href="#aiheZZ" class="calendar" id="aihe1" name="aiheZZ">23.2. aihe1</a>
 		}
 		str += "\n"

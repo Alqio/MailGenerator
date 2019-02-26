@@ -40,10 +40,19 @@ class Mail {
 	def generateTableOfContentsHtml: String = {
 		var str = "<h2>Sisällysluettelo</h2>\n"
 		for (i <- 0 until topics.size) {
-			str += topics(i).generateTableOfContents(i + 1)
+			str += topics(i).generateTableOfContentsHtml(i + 1)
 		}
 		str += "\n" + global.topicChangeMark
 		str	  
+	}
+
+	def generateTableOfContentsSpecialHtml: String = {
+		var str = "<h2>Sisällysluettelo</h2>\n"
+		for (i <- 0 until topics.size) {
+			str += topics(i).generateTableOfContentsSpecialHtml(i + 1)
+		}
+		str += "\n" + global.topicChangeMark
+		str
 	}
 
 	def generate: String = {
@@ -107,7 +116,7 @@ class Mail {
     </style>
 
     <script>
-        $(document).ready(function() {
+       $(document).ready(function() {
             $(".btn").click(function () {
                 $(this).find('i').toggleClass('fas fa-minus-circle');
             });
@@ -115,20 +124,28 @@ class Mail {
                 let t = $(this);
                 let name = t.attr("name");
 
-                let el = $(document).find("#" + name);
+                let el = $("#" + name);
                 let parent = el.parent();
 
-                el.addClass('in');
-                parent.addClass('in');
-
                 let target = "#" + parent.attr('id');
+                console.log(target);
                 let el2 = $("button[data-target='" + target +"']");
 
-                parent.find('i').toggleClass('fas fa-minus-circle');
-                el2.find('i').toggleClass('fas fa-minus-circle');
+                let is = parent.find('i');
+                for (let i = 0; i < is.length; i++) {
+                    let element = is[i];
+                    console.log(element);
+                    let p = $(element).parent();
 
-						});
-        });
+                    if (p.attr("data-target") === "#" + name) {
+                        $(element).toggleClass('fas fa-minus-circle');
+                    }
+                }
+                el2.find('i').toggleClass('fas fa-minus-circle');
+                el.collapse('toggle');
+                parent.collapse('toggle');
+           });
+			 });
  
     </script>    
 
@@ -149,7 +166,7 @@ class Mail {
 			if (html)
 				head + this.generateTableOfContentsHtml + generateHtml + end
 			else
-				head + this.generateTableOfContentsHtml + generateSpecialHtml + end
+				head + this.generateTableOfContentsSpecialHtml + generateSpecialHtml + end
 		}
 	}
 	
