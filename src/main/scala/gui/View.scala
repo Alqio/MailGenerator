@@ -22,7 +22,7 @@ object View extends SimpleSwingApplication {
 			editable = false
 		}
 		
-		output.text = mail.generateAll
+		output.text = mail.generateAll()
 		
 		contents = new FlowPanel {
 			contents += new ScrollPane(output)
@@ -35,7 +35,7 @@ object View extends SimpleSwingApplication {
 	window.title = "Viikkomaili text"
 	
 	def updateOutput() = {
-		window.output.text = mail.generateAll
+		window.output.text = mail.generateAll()
 	}
 	
 	val mainFrame = new MainFrame {
@@ -65,7 +65,7 @@ object View extends SimpleSwingApplication {
 		val removeSubtopic = new Button("Remove subtopic")
 		val htmlCheckbox = new CheckBox("HTML?")
 		val specialHtmlCheckbox = new CheckBox("Special HTML?")
-		
+
 		val items = Array(subtopicName, topic, date, link, text, addButton,
 		    loadButton, saveButton, loadSubtopicButton, subtopic, topic, 
 		    loadSubtopics, removeSubtopic, htmlCheckbox, signup_start, signup_end, specialHtmlCheckbox)
@@ -98,9 +98,11 @@ object View extends SimpleSwingApplication {
 					}
 				} else if (source == loadButton) {
 					loadFile()
+					createBackUp()
 					updateOutput()
 				} else if (source == saveButton) {
 					saveFile()
+					createBackUp()
 				} else if (source == loadSubtopicButton) {
 					val st = subtopic.item
 					date.text = st.date.toString
@@ -118,17 +120,27 @@ object View extends SimpleSwingApplication {
 				} else if (source == htmlCheckbox) {
 					mail.html = !mail.html
 					mail.specialHtml = false
+					specialHtmlCheckbox.selected = false
 					updateOutput()
 				} else if (source == specialHtmlCheckbox) {
 					mail.html = false
-					mail.specialHtml = true
+					mail.specialHtml = !mail.specialHtml
+					htmlCheckbox.selected = false
 					updateOutput()
 				}
 			}
 		}
-		
-		def saveFile() = {
-			val workingDirectory = new File(System.getProperty("user.dir"));
+
+		def createBackUp(): Unit = {
+			val pw = new PrintWriter("backup" + mail.backupNumber + ".txt", "UTF-8")
+			pw.write(mail.generateAll(true))
+			pw.close()
+			println("Backup created successfully.")
+			mail.backupNumber = (mail.backupNumber + 1) % (global.maxBackups + 1)
+		}
+
+		def saveFile(): Unit = {
+			val workingDirectory = new File(System.getProperty("user.dir"))
 	
 			val saveFile = new JFileChooser()
 			saveFile.setCurrentDirectory(workingDirectory)
@@ -148,7 +160,7 @@ object View extends SimpleSwingApplication {
 			  println("Error occurred when saving file, nothing saved.")
 			} else {
 			  val pw = new PrintWriter(file.get, "UTF-8")
-			  pw.write(mail.generateAll)
+			  pw.write(mail.generateAll())
 			  pw.close()
 			  println("File saved successfully! File name: " + file.get.getName())
 			}

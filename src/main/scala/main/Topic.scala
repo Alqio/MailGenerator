@@ -75,13 +75,13 @@ class Topic(val name: String) {
 			
 			for (line <- textAsArray) {
 				val splitted = line.split(' ')
-				println(splitted)
+
 				val beforeLink = splitted.takeWhile(word => !word.contains("http"))
-				println("before link: " + beforeLink.mkString(", "))
+
 				
 				if (beforeLink.size < splitted.size) {
 					val link = splitted(beforeLink.size)
-					println(link)
+
 					if (beforeLink.size == 0) {
 						splitted(beforeLink.size) = "\n\n<a href=\"" + link + "\">" + link + "</a>"
 					} else {
@@ -119,7 +119,7 @@ class Topic(val name: String) {
 		* @return
 		*/
 	def generateHtmlSpecial(number: Int): String = {
-		println("Generating html for number " + number)
+
 		var str = "\n<button type=\"button\" class=\"btn\" data-toggle=\"collapse\" data-target=\"#" + name.replace(' ', '_').replace('&', 'U') + 
 							"\"><h2><i class=\"fa fa-plus-circle\" style=\"font-size:24px\"></i>  "+ number + ". " + name + "</h2></button>\n"
 		
@@ -131,7 +131,7 @@ class Topic(val name: String) {
 		for (i <- 0 until sorted.size) {
 			
 			val realName = sorted(i).slug
-			println(realName)
+			val realName = sorted(i).name.replace(' ', '_').map(x => if (x.isLetter) x else "ZZ").mkString
 			
 			str += "\n<button type=\"button\" class=\"btn\" data-toggle=\"collapse\" data-target=\"#" + realName +
 						 "\"><i class=\"fa fa-plus-circle\" style=\"font-size:16px\"></i>  "+ number + "."+ (i + 1) + " " + sorted(i).name + 
@@ -144,13 +144,13 @@ class Topic(val name: String) {
 			
 			for (line <- textAsArray) {
 				val splitted = line.split(' ')
-				println(splitted)
+
 				val beforeLink = splitted.takeWhile(word => !word.contains("http"))
-				println("before link: " + beforeLink.mkString(", "))
+
 				
 				if (beforeLink.size < splitted.size) {
 					val link = splitted(beforeLink.size)
-					println(link)
+
 					if (beforeLink.size == 0) {
 						splitted(beforeLink.size) = "\n\n<a href=\"" + link + "\">" + link + "</a>"
 					} else {
