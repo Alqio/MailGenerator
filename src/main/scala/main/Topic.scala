@@ -43,7 +43,7 @@ class Topic(val name: String) {
 		val sorted = sortSubtopics
 		for (i <- 0 until subtopics.size) {
 			val subtopic = sorted(i)
-			str += "<a href=\"#" + subtopic.slug + "\" class=\"calendar\" name=\"" + subtopic.slug + "\">" + (number + "." + (i + 1) + " " + sorted(i).name) + "</a>\n"
+			str += "  " + "<a href=\"#" + subtopic.slug + "\" class=\"calendar\" name=\"" + subtopic.slug + "\">" + (number + "." + (i + 1) + " " + sorted(i).name) + "</a>\n"
 		}
 		str
 	}
@@ -53,7 +53,7 @@ class Topic(val name: String) {
 		val sorted = sortSubtopics
 		for (i <- 0 until subtopics.size) {
 			val subtopic = sorted(i)
-			str += "<a href=\"#" + subtopic.slug + "\" class=\"calendarSpecial\" name=\"" + subtopic.slug + "\">" + (number + "." + (i + 1) + " " + sorted(i).name) + "</a>\n"
+			str += "  " + "<a href=\"#" + subtopic.slug + "\" class=\"calendarSpecial\" name=\"" + subtopic.slug + "\">" + (number + "." + (i + 1) + " " + sorted(i).name) + "</a>\n"
 		}
 		str
 	}
