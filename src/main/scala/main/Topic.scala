@@ -32,7 +32,28 @@ class Topic(val name: String) {
 		var str = number + ". " + name + "\n"
 		val sorted = sortSubtopics
 		for (i <- 0 until subtopics.size) {
+			val subtopic = sorted(i)
 			str += "  " + (number + "." + (i + 1) + " " + sorted(i).name) + "\n"
+		}
+		str
+	}
+
+	def generateTableOfContentsHtml(number: Int): String = {
+		var str = number + ". " + name + "\n"
+		val sorted = sortSubtopics
+		for (i <- 0 until subtopics.size) {
+			val subtopic = sorted(i)
+			str += "<a href=\"#" + subtopic.slug + "\" class=\"calendar\" name=\"" + subtopic.slug + "\">" + (number + "." + (i + 1) + " " + sorted(i).name) + "</a>\n"
+		}
+		str
+	}
+
+	def generateTableOfContentsSpecialHtml(number: Int): String = {
+		var str = number + ". " + name + "\n"
+		val sorted = sortSubtopics
+		for (i <- 0 until subtopics.size) {
+			val subtopic = sorted(i)
+			str += "<a href=\"#" + subtopic.slug + "\" class=\"calendarSpecial\" name=\"" + subtopic.slug + "\">" + (number + "." + (i + 1) + " " + sorted(i).name) + "</a>\n"
 		}
 		str
 	}
@@ -91,6 +112,7 @@ class Topic(val name: String) {
 		str		
 	}
 
+
 	/**
 		* Generates the Special HTML with drop down lists of the Topic's contents
 		* @param number
@@ -108,8 +130,8 @@ class Topic(val name: String) {
 
 		for (i <- 0 until sorted.size) {
 			
+			val realName = sorted(i).slug
 			val realName = sorted(i).name.replace(' ', '_').map(x => if (x.isLetter) x else "ZZ").mkString
-
 			
 			str += "\n<button type=\"button\" class=\"btn\" data-toggle=\"collapse\" data-target=\"#" + realName +
 						 "\"><i class=\"fa fa-plus-circle\" style=\"font-size:16px\"></i>  "+ number + "."+ (i + 1) + " " + sorted(i).name + 
@@ -137,7 +159,6 @@ class Topic(val name: String) {
 					
 				}
 				textFixedArray += splitted.mkString(" ")
-				
 
 			}
 			
@@ -201,7 +222,11 @@ class Kalenteri() extends Topic("Kalenteri") {
 		sorted
 	}  
   override def generateTableOfContents(n: Int): String = n + ". " + this.name + "\n"
-  
+
+	override def generateTableOfContentsHtml(number: Int): String = this.generateTableOfContents(number)
+
+	override def generateTableOfContentsSpecialHtml(number: Int): String = this.generateTableOfContents(number)
+
 	override def generate(number: Int): String = {
 		
 		val now = Calendar.getInstance()
@@ -249,6 +274,7 @@ class Kalenteri() extends Topic("Kalenteri") {
 		var str = "\n\n<h2>" + number + ". " + this.name + "</h2>\n\nTällä viikolla\n"
 
 		val date = LocalDate.now()
+
 		val nextWeek = date.plusWeeks(1)
 		val sorted = sortSubtopics
 		val thisweek = sorted.filter(s => s.date.innerDate.isBefore(nextWeek))
@@ -273,6 +299,9 @@ class Kalenteri() extends Topic("Kalenteri") {
 		
 		for (subtopic <- signups) {
 			str += "  " + subtopic.signup_start + " - " + subtopic.signup_end + " " + subtopic.name + "\n"
+			val t = subtopic.signup_start + " - " + subtopic.signup_end + " " + subtopic.name
+			//str += "  <a href=\"#" + subtopic.slug + "\" class=\"calendarSpecial\" name=\"" + subtopic.slug + "\">" + t + "</a>\n"
+			//<a href="#aiheZZ" class="calendar" id="aihe1" name="aiheZZ">23.2. aihe1</a>
 		}
 		str += "\n"
 		str + "----\n"
@@ -304,8 +333,11 @@ class Subtopic(val name: String, val date: Date, val link: String = "", val load
 		displayDate = false
 	}
 	
-	override def toString = name
-	
+	override def toString: String = name
+
+
+	def slug: String = name.replace(' ', '_').map(x => if (x.isLetter || x.isDigit) x else "ZZ").mkString
+
 	def this(name: String, date: Date, loaded: Boolean) = {
 		this(name, date, "", loaded)
 	}
