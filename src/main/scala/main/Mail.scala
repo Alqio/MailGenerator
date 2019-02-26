@@ -15,6 +15,8 @@ class Mail {
 
 	var html = false
 	var specialHtml = false
+
+	var backupNumber = 1
 	
 	val topics = Vector(calendar, guild, ayy, other, bottomCorner)
 
@@ -70,8 +72,8 @@ class Mail {
 		str		
 	}
 	
-	def generateAll: String = {
-		if (!html && !specialHtml)
+	def generateAll(forceNormal: Boolean = false): String = {
+		if ((!html && !specialHtml) || forceNormal)
 			this.generateTableOfContents + generate
 		else {
 			val head = """
