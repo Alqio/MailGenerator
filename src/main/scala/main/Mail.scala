@@ -145,7 +145,7 @@ class Mail {
                 }
                 el2.find('i').toggleClass('fas fa-minus-circle');
                 el.collapse('toggle');
-                parent.collapse('toggle');
+                parent.collapse();
            });
 			 });
  

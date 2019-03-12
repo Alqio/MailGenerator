@@ -131,7 +131,7 @@ class Topic(val name: String) {
 		for (i <- 0 until sorted.size) {
 			
 			val realName = sorted(i).slug
-			val realName = sorted(i).name.replace(' ', '_').map(x => if (x.isLetter) x else "ZZ").mkString
+			//val realName = sorted(i).name.replace(' ', '_').map(x => if (x.isLetter) x else "ZZ").mkString
 			
 			str += "\n<button type=\"button\" class=\"btn\" data-toggle=\"collapse\" data-target=\"#" + realName +
 						 "\"><i class=\"fa fa-plus-circle\" style=\"font-size:16px\"></i>  "+ number + "."+ (i + 1) + " " + sorted(i).name + 
