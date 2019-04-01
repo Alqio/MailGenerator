@@ -234,7 +234,7 @@ object Mail {
 				text = text.dropWhile(row => row == "").drop(3).dropWhile(row => row == "")
 				println(text.take(3).mkString("\n"))
 			} catch {
-				case ex: Exception => println("Error when creating mail: " + ex.getMessage())
+				case ex: Exception => println("Error when creating mail: " + ex.getMessage)
 			}
 		}
 
@@ -242,9 +242,11 @@ object Mail {
 			if (text(1) == "---") {
 				text = text.drop(2)
 			}
-			
+
 			val row = text(0).reverse
-			
+
+			if (row == "----") return
+
 			val d = if (row(0) == '.') row.takeWhile(_ != ' ').reverse else ""
 			
 			val name = text(0).dropWhile(_ != ' ').dropRight(d.size).trim
@@ -258,7 +260,7 @@ object Mail {
 			}
 			//text = text.drop(1)
 			//drop(1) so the name is not included
-			val subtopicText = text.drop(1).takeWhile(row => row != "---" && row != "----")
+			val subtopicText = text.drop(1).takeWhile(new_row => new_row != "---" && new_row != "----")
 			text = text.drop(subtopicText.length)
 
 			val subtopic = new Subtopic(name, date, true)
