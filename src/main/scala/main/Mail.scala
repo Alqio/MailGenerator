@@ -143,9 +143,11 @@ class Mail {
                         $(element).toggleClass('fas fa-minus-circle');
                     }
                 }
-                el2.find('i').toggleClass('fas fa-minus-circle');
                 el.collapse('toggle');
-                parent.collapse();
+                if (!parent.hasClass('in')) {
+                    parent.collapse('toggle');
+                    el2.find('i').toggleClass('fas fa-minus-circle');
+								}
            });
 			 });
  
