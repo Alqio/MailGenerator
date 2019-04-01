@@ -8,4 +8,5 @@ object global {
   val subtopicChangeMark = "---"
   val year = 2019
   val maxBackups = 3
+  val iframe = "viikkomaili_iframe"
 }
